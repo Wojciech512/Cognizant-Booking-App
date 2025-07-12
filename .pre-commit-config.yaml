@@ -1,0 +1,52 @@
+default_language_version:
+  python: python3
+
+repos:
+  - repo: local
+    hooks:
+      - id: backend-black
+        name: Run Backend Black Formatter
+        entry: black
+        language: python
+        additional_dependencies: [black==23.9.1]
+        files: ^backend/.*\.py$
+        always_run: true
+        args: ["--quiet", "--line-length", "78", "backend/"]
+
+      - id: backend-isort
+        name: Run Backend isort Imports
+        entry: isort
+        language: python
+        additional_dependencies: [isort==5.12.0]
+        files: ^backend/.*\.py$
+        always_run: true
+        args:
+          - "--quiet"
+          - "--line-length=78"
+          - "--overwrite-in-place"
+          - "backend/"
+
+      - id: backend-flake8
+        name: Run Backend Flake8 Check
+        entry: flake8
+        language: python
+        additional_dependencies: [flake8==6.1.0]
+        files: ^backend/.*\.py$
+        always_run: true
+        args:
+          - --max-line-length=78
+          - --exclude=.venv,node_modules
+
+      - id: frontend-prettier
+        name: Run Frontend Prettier Check
+        entry: bash -c "cd frontend && npx prettier . --check"
+        language: node
+        files: ^frontend/.*\.(js|jsx|ts|tsx|css|scss|json|md)$
+        always_run: true
+
+      - id: frontend-eslint
+        name: Run Frontend ESLint Check
+        entry: bash -c "cd frontend && npx eslint . --ext .js,.jsx,.ts,.tsx --max-warnings=0"
+        language: node
+        files: ^frontend/.*\.(js|jsx|ts|tsx)$
+        always_run: true

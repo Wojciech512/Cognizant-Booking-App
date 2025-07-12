@@ -1,11 +1,11 @@
 [tool.black]
-line-length = 88
+line-length = 78
 target-version = ['py311']
 skip-string-normalization = false
 
 [tool.isort]
 profile = "black"
-line_length = 88
+line_length = 78
 known_first_party = ["events", "bookings", "core"]
 multi_line_output = 3
 include_trailing_comma = true
