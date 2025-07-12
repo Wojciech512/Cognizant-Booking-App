@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "channels",
     # Domenowe
+    "core",
     "events",
     "bookings",
 ]
@@ -66,11 +67,11 @@ ASGI_APPLICATION = "core.asgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("POSTGRES_DB", "eventbooking"),
-        "USER": os.environ.get("POSTGRES_USER", "event_user"),
-        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "event_pass"),
-        "HOST": os.environ.get("DB_HOST", "db"),
-        "PORT": os.environ.get("DB_PORT", "5432"),
+        "NAME": os.environ.get("POSTGRES_DB"),
+        "USER": os.environ.get("POSTGRES_USER"),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
+        "HOST": os.environ.get("DB_HOST"),
+        "PORT": os.environ.get("DB_PORT"),
     }
 }
 
