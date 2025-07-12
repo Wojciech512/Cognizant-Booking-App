@@ -1,0 +1,16 @@
+# node/yarn
+node_modules
+frontend/node_modules
+
+# build / dist
+frontend/dist
+
+# Python venv
+backend/.venv
+
+# Docker, logs
+docker-compose.yml
+*.log
+
+# Git metadata
+.git
