@@ -1,0 +1,49 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: eventbooking
+      POSTGRES_USER: event_user
+      POSTGRES_PASSWORD: event_pass
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    networks:
+      - backend-net
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile-backend
+    env_file: .env
+    depends_on:
+      - db
+      - redis
+    ports:
+      - "8000:8000"
+    networks:
+      - backend-net
+
+#  frontend:
+#    build:
+#      context: ./frontend
+#      dockerfile: Dockerfile-frontend
+#    depends_on:
+#      - backend
+#    ports:
+#      - "8080:80"
+#    networks:
+#      - backend-net
+
+volumes:
+  dbdata:
+
+networks:
+  backend-net:
+    driver: bridge
