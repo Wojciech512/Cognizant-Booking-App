@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import {LoginPayload, RegisterPayload} from '../models/auth.models';
+import { LoginPayload, RegisterPayload } from '../models/auth.models';
 
 export const register = createAction(
   '[Auth] Register',
@@ -11,10 +11,7 @@ export const registerFailure = createAction(
   props<{ error: string }>(),
 );
 
-export const login = createAction(
-  '[Auth] Login',
-  props<LoginPayload>(),
-);
+export const login = createAction('[Auth] Login', props<LoginPayload>());
 export const loginSuccess = createAction(
   '[Auth] Login Success',
   props<{ token: string }>(),
