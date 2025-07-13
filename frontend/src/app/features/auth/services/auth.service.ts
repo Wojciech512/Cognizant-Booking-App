@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import {
   ApiError,
   LoginPayload,
@@ -8,7 +9,6 @@ import {
   RegisterPayload,
   RegisterResponse,
 } from '../models/auth.models';
-import { catchError } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -43,5 +43,7 @@ export class AuthService {
       .pipe(catchError(this.handleApiError.bind(this)));
   }
 
-  // TODO logout z backlistowaniem starych tokenów
+  logout(refreshToken: string): Observable<void> {
+    return this.http.post<void>('/api/logout/', { refresh: refreshToken });
+  }
 }

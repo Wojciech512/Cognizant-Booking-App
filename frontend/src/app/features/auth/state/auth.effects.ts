@@ -45,9 +45,10 @@ export class AuthEffects {
       exhaustMap(({ username, password }: LoginPayload) =>
         this.authService.login({ username, password }).pipe(
           map((response) => {
-            const token = response.access;
-            localStorage.setItem('token', token);
-            return AuthActions.loginSuccess({ token });
+            localStorage.setItem('token', response.access);
+            localStorage.setItem('refreshToken', response.refresh!);
+
+            return AuthActions.loginSuccess({ token: response.access });
           }),
           tap(() => {
             this.router.navigate(['/']);
@@ -68,9 +69,24 @@ export class AuthEffects {
     () =>
       this.actions$.pipe(
         ofType(AuthActions.logout),
-        tap(() => {
-          localStorage.removeItem('token');
-          this.router.navigate(['/login']);
+        exhaustMap(() => {
+          const refresh = localStorage.getItem('refreshToken');
+          if (!refresh) {
+            return of(null);
+          }
+          return this.authService.logout(refresh).pipe(
+            tap(() => {
+              localStorage.removeItem('token');
+              localStorage.removeItem('refreshToken');
+              this.router.navigate(['/login']);
+            }),
+            catchError(() => {
+              localStorage.removeItem('token');
+              localStorage.removeItem('refreshToken');
+              this.router.navigate(['/login']);
+              return of(null);
+            }),
+          );
         }),
       ),
     { dispatch: false },
