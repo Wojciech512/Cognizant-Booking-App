@@ -10,6 +10,9 @@
       <mat-error *ngIf="loginForm.get('username')?.hasError('username')">
         Please enter a valid username address
       </mat-error>
+      <mat-error *ngIf="loginForm.get('username')?.hasError('server')">
+        {{ loginForm.get("username")?.getError("server") }}
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
@@ -18,7 +21,14 @@
       <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
         Enter password
       </mat-error>
+      <mat-error *ngIf="loginForm.get('password')?.hasError('server')">
+        {{ loginForm.get("password")?.getError("server") }}
+      </mat-error>
     </mat-form-field>
+
+    <div class="error non-field" *ngIf="nonFieldErrors?.length">
+      <div *ngFor="let msg of nonFieldErrors">{{ msg }}</div>
+    </div>
 
     <div class="actions">
       <button
@@ -30,9 +40,5 @@
         Log in
       </button>
     </div>
-
-    <p class="error" *ngIf="error$ | async as errorMsg">
-      {{ errorMsg }}
-    </p>
   </form>
 </mat-card>

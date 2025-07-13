@@ -19,8 +19,10 @@ import {
 } from '@angular/material/input';
 import { MatButton, MatButtonModule } from '@angular/material/button';
 import { Observable } from 'rxjs';
-import { register } from '../../state/auth.actions';
 import { selectAuthLoading, selectAuthError } from '../../state/auth.selectors';
+import { AuthService } from '../../services/auth.service';
+import { ApiError } from '../../models/auth.models';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -49,10 +51,13 @@ export class RegisterComponent implements OnInit {
   registerForm!: FormGroup;
   loading$!: Observable<boolean>;
   error$!: Observable<string | null>;
+  nonFieldErrors: string[] | undefined;
 
   constructor(
     private fb: FormBuilder,
     private store: Store,
+    private authService: AuthService,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -78,7 +83,21 @@ export class RegisterComponent implements OnInit {
 
   onSubmit(): void {
     if (this.registerForm.invalid) return;
-    const { username, email, password, password2 } = this.registerForm.value;
-    this.store.dispatch(register({ username, email, password, password2 }));
+
+    this.authService.register(this.registerForm.value).subscribe({
+      next: () => this.router.navigate(['/login']),
+      error: (apiError: ApiError) => {
+        Object.keys(this.registerForm.controls).forEach((field) => {
+          this.registerForm.get(field)?.setErrors(null);
+        });
+        Object.entries(apiError.fieldErrors).forEach(([field, messages]) => {
+          const control = this.registerForm.get(field);
+          if (control) {
+            control.setErrors({ server: messages[0] });
+          }
+        });
+        this.nonFieldErrors = apiError.nonFieldErrors || [];
+      },
+    });
   }
 }

@@ -17,9 +17,11 @@ import { MatCard, MatCardModule } from '@angular/material/card';
 import { MatButton } from '@angular/material/button';
 import { MatButtonModule } from '@angular/material/button';
 import { Observable } from 'rxjs';
-import { login } from '../../state/auth.actions';
 import { selectAuthLoading, selectAuthError } from '../../state/auth.selectors';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { ApiError } from '../../models/auth.models';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -48,10 +50,13 @@ export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   loading$!: Observable<boolean>;
   error$!: Observable<string | null>;
+  nonFieldErrors: string[] | undefined;
 
   constructor(
     private fb: FormBuilder,
     private store: Store,
+    private authService: AuthService,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -66,7 +71,22 @@ export class LoginComponent implements OnInit {
 
   onSubmit(): void {
     if (this.loginForm.invalid) return;
-    const { username, password } = this.loginForm.value;
-    this.store.dispatch(login({ username, password }));
+
+    this.nonFieldErrors = [];
+    this.authService.login(this.loginForm.value).subscribe({
+      next: () => this.router.navigate(['/']),
+      error: (apiError: ApiError) => {
+        Object.keys(this.loginForm.controls).forEach((field) => {
+          this.loginForm.get(field)?.setErrors(null);
+        });
+        Object.entries(apiError.fieldErrors).forEach(([field, msgs]) => {
+          const control = this.loginForm.get(field);
+          if (control) {
+            control.setErrors({ server: msgs[0] });
+          }
+        });
+        this.nonFieldErrors = apiError.nonFieldErrors || [];
+      },
+    });
   }
 }

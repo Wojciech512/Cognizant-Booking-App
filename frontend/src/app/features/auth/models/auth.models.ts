@@ -28,9 +28,7 @@ export interface AuthState {
   error: string | null;
 }
 
-export const initialAuthState: AuthState = {
-  token: null,
-  isAuthenticated: false,
-  loading: false,
-  error: null,
-};
+export interface ApiError {
+  fieldErrors: Record<string, string[]>;
+  nonFieldErrors?: string[];
+}

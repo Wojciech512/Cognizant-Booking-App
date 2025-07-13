@@ -1,6 +1,13 @@
 import { createReducer, on } from '@ngrx/store';
 import * as AuthActions from './auth.actions';
-import { initialAuthState } from '../models/auth.models';
+import { AuthState } from '../models/auth.models';
+
+const initialAuthState: AuthState = {
+  token: null,
+  isAuthenticated: false,
+  loading: false,
+  error: null,
+};
 
 export const authReducer = createReducer(
   initialAuthState,
