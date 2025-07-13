@@ -19,6 +19,9 @@ export default defineConfig([
       "package-lock.json",
       "yarn.lock",
       "pnpm-lock.yaml",
+      ".vscode",
+      "*.json",
+      ".angular",
     ],
   },
   {
