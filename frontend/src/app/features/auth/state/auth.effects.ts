@@ -18,20 +18,22 @@ export class AuthEffects {
   register$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.register),
-      exhaustMap(({ email, password }) =>
-        this.authService.register({ email, password }).pipe(
-          map(() => AuthActions.registerSuccess()),
-          tap(() => {
-            this.router.navigate(['/login']);
-          }),
-          catchError((error) =>
-            of(
-              AuthActions.registerFailure({
-                error: error.error?.message || 'Rejestracja nie powiodła się',
-              }),
+      exhaustMap(({ username, email, password, password2 }) =>
+        this.authService
+          .register({ username, email, password, password2 })
+          .pipe(
+            map(() => AuthActions.registerSuccess()),
+            tap(() => {
+              this.router.navigate(['/login']);
+            }),
+            catchError((error) =>
+              of(
+                AuthActions.registerFailure({
+                  error: error.error?.message || 'Registration failed',
+                }),
+              ),
             ),
           ),
-        ),
       ),
     ),
   );
@@ -52,8 +54,8 @@ export class AuthEffects {
           catchError((error) => {
             const errMsg =
               error.status === 401
-                ? 'Nieprawidłowy email lub hasło'
-                : 'Logowanie nie powiodło się';
+                ? 'Invalid email or password'
+                : 'Login failed';
             return of(AuthActions.loginFailure({ error: errMsg }));
           }),
         ),
