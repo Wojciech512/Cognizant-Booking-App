@@ -1,0 +1,13 @@
+<mat-toolbar color="primary" class="app-header">
+  <span class="logo">CognizantBookingApp</span>
+  <span class="spacer"></span>
+
+  <ng-container *ngIf="!(isAuthenticated$ | async); else loggedIn">
+    <a mat-button routerLink="/login">Login</a>
+    <a mat-button routerLink="/register">Registration</a>
+  </ng-container>
+
+  <ng-template #loggedIn>
+    <button mat-button color="warn" (click)="logout()">Logout</button>
+  </ng-template>
+</mat-toolbar>
