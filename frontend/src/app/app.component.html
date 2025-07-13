@@ -1,5 +1,13 @@
 <nav>
-  <a routerLink="/login">Logowanie</a> |
-  <a routerLink="/register">Rejestracja</a>
+  <a routerLink="/login" *ngIf="!(isAuthenticated$ | async)">Login</a>
+  <a routerLink="/register" *ngIf="!(isAuthenticated$ | async)">Registration</a>
+  <button
+    mat-button
+    color="warn"
+    *ngIf="isAuthenticated$ | async"
+    (click)="logout()"
+  >
+    Logout
+  </button>
 </nav>
 <router-outlet></router-outlet>
