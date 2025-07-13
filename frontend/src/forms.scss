@@ -1,0 +1,56 @@
+$spacing-unit: 1rem;
+$card-bg: #ffffff;
+$card-radius: 0.5rem;
+$card-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+$error-color: #d32f2f;
+
+@mixin form-card {
+  mat-card {
+    background: $card-bg;
+    border-radius: $card-radius;
+    box-shadow: $card-shadow;
+    padding: $spacing-unit * 1.5;
+    max-width: 25rem;
+    margin: $spacing-unit auto;
+    display: block;
+  }
+}
+
+@mixin form-layout {
+  form {
+    display: flex;
+    flex-direction: column;
+
+    .full-width {
+      width: 100%;
+      margin-bottom: $spacing-unit;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      margin-top: $spacing-unit * 1.5;
+
+      button {
+        min-width: 7.5rem;
+      }
+    }
+
+    .error,
+    mat-error {
+      color: $error-color;
+      font-size: 0.875rem;
+      margin-top: 0.5 * $spacing-unit;
+      display: block;
+    }
+  }
+}
+
+@mixin form-responsive {
+  @media (max-width: 37.5rem) {
+    mat-card {
+      margin: $spacing-unit;
+      padding: $spacing-unit;
+    }
+  }
+}

@@ -24,6 +24,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 @Component({
   selector: 'app-login',
   templateUrl: 'login.component.html',
+  styleUrls: ['login.component.scss'],
   standalone: true,
   imports: [
     AsyncPipe,
