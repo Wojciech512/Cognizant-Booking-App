@@ -60,17 +60,18 @@ export class RegisterComponent implements OnInit {
 
     this.registerForm = this.fb.group(
       {
+        username: ['', [Validators.required]],
         email: ['', [Validators.required, Validators.email]],
         password: ['', [Validators.required, Validators.minLength(6)]],
-        confirmPassword: ['', [Validators.required]],
+        password2: ['', [Validators.required]],
       },
       { validators: this.passwordMatchValidator },
     );
   }
 
   passwordMatchValidator(form: AbstractControl): ValidationErrors | null {
-    const password = form.get('password')?.value;
-    const confirm = form.get('confirmPassword')?.value;
+    const password: string = form.get('password')?.value;
+    const confirm: string = form.get('password2')?.value;
     return password === confirm ? null : { passwordMismatch: true };
   }
 
@@ -78,7 +79,7 @@ export class RegisterComponent implements OnInit {
     if (this.registerForm.invalid) {
       return;
     }
-    const { email, password } = this.registerForm.value;
-    this.store.dispatch(register({ email, password }));
+    const { username, email, password, password2 } = this.registerForm.value;
+    this.store.dispatch(register({ username, email, password, password2 }));
   }
 }

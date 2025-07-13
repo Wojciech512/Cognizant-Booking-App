@@ -2,7 +2,12 @@ import { createAction, props } from '@ngrx/store';
 
 export const register = createAction(
   '[Auth] Register',
-  props<{ email: string; password: string }>(),
+  props<{
+    username: string;
+    email: string;
+    password: string;
+    password2: string;
+  }>(),
 );
 export const registerSuccess = createAction('[Auth] Register Success');
 export const registerFailure = createAction(
