@@ -18,7 +18,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     def validate_email(self, value):
         if User.objects.filter(email__iexact=value).exists():
             raise serializers.ValidationError(
-                "This email address is already taken.."
+                "This email address is already taken."
             )
         return value
 
