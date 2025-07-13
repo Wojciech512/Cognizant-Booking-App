@@ -5,6 +5,7 @@ import { of } from 'rxjs';
 import { exhaustMap, map, catchError, tap } from 'rxjs/operators';
 import * as AuthActions from './auth.actions';
 import { AuthService } from '../services/auth.service';
+import { LoginPayload, RegisterPayload } from '../models/auth.models';
 
 @Injectable()
 export class AuthEffects {
@@ -18,7 +19,7 @@ export class AuthEffects {
   register$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.register),
-      exhaustMap(({ username, email, password, password2 }) =>
+      exhaustMap(({ username, email, password, password2 }: RegisterPayload) =>
         this.authService
           .register({ username, email, password, password2 })
           .pipe(
@@ -41,8 +42,8 @@ export class AuthEffects {
   login$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.login),
-      exhaustMap(({ email, password }) =>
-        this.authService.login({ email, password }).pipe(
+      exhaustMap(({ username, password }: LoginPayload) =>
+        this.authService.login({ username, password }).pipe(
           map((response) => {
             const token = response.access;
             localStorage.setItem('token', token);

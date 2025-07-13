@@ -58,14 +58,14 @@ export class LoginComponent implements OnInit {
     this.error$ = this.store.select(selectAuthError);
 
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      username: ['', [Validators.required]],
       password: ['', [Validators.required]],
     });
   }
 
   onSubmit(): void {
     if (this.loginForm.invalid) return;
-    const { email, password } = this.loginForm.value;
-    this.store.dispatch(login({ email, password }));
+    const { username, password } = this.loginForm.value;
+    this.store.dispatch(login({ username, password }));
   }
 }

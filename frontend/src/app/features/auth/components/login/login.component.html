@@ -1,22 +1,22 @@
 <mat-card>
-  <h2>Logowanie</h2>
+  <h2>Login</h2>
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Email</mat-label>
-      <input matInput type="email" formControlName="email" required />
-      <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
-        Podaj adres email
+      <mat-label>Username</mat-label>
+      <input matInput type="text" formControlName="username" required />
+      <mat-error *ngIf="loginForm.get('username')?.hasError('required')">
+        Enter your username
       </mat-error>
-      <mat-error *ngIf="loginForm.get('email')?.hasError('email')">
-        Podaj poprawny adres email
+      <mat-error *ngIf="loginForm.get('username')?.hasError('username')">
+        Please enter a valid username address
       </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Hasło</mat-label>
+      <mat-label>Password</mat-label>
       <input matInput type="password" formControlName="password" required />
       <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
-        Podaj hasło
+        Enter password
       </mat-error>
     </mat-form-field>
 
@@ -27,7 +27,7 @@
         type="submit"
         [disabled]="loginForm.invalid || (loading$ | async)"
       >
-        Zaloguj
+        Log in
       </button>
     </div>
 

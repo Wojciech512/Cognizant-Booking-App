@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
+  LoginPayload,
   LoginResponse,
   RegisterPayload,
   RegisterResponse,
@@ -15,10 +16,7 @@ export class AuthService {
     return this.http.post<RegisterResponse>('/api/register/', data);
   }
 
-  login(credentials: {
-    email: string;
-    password: string;
-  }): Observable<LoginResponse> {
+  login(credentials: LoginPayload): Observable<LoginResponse> {
     return this.http.post<LoginResponse>('/api/token/', credentials);
   }
 
