@@ -5,11 +5,14 @@ export const register = createAction(
   '[Auth] Register',
   props<RegisterPayload>(),
 );
-export const registerSuccess = createAction('[Auth] Register Success');
 export const registerFailure = createAction(
   '[Auth] Register Failure',
-  props<{ error: string }>(),
+  props<{
+    fieldErrors: Record<string, string[]>;
+    nonFieldErrors: string[];
+  }>(),
 );
+export const registerSuccess = createAction('[Auth] Register Success');
 
 export const login = createAction('[Auth] Login', props<LoginPayload>());
 export const loginFailure = createAction(

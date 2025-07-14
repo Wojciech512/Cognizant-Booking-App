@@ -12,20 +12,29 @@ const initialAuthState: AuthState = {
 
 export const authReducer = createReducer(
   initialAuthState,
-  on(AuthActions.register, AuthActions.login, (state) => ({
+  on(AuthActions.register, (state) => ({
     ...state,
     loading: true,
-    error: null,
+    fieldErrors: {},
+    nonFieldErrors: [],
   })),
   on(AuthActions.registerSuccess, (state) => ({
     ...state,
     loading: false,
-    error: null,
+    fieldErrors: {},
+    nonFieldErrors: [],
   })),
-  on(AuthActions.registerFailure, (state, { error }) => ({
+  on(AuthActions.registerFailure, (state, { fieldErrors, nonFieldErrors }) => ({
     ...state,
     loading: false,
-    error,
+    fieldErrors: fieldErrors || {},
+    nonFieldErrors: nonFieldErrors || [],
+  })),
+  on(AuthActions.login, (state) => ({
+    ...state,
+    loading: true,
+    fieldErrors: {},
+    nonFieldErrors: [],
   })),
   on(AuthActions.loginSuccess, (state, { token }) => ({
     ...state,
@@ -37,8 +46,8 @@ export const authReducer = createReducer(
   on(AuthActions.loginFailure, (state, { fieldErrors, nonFieldErrors }) => ({
     ...state,
     loading: false,
-    fieldErrors,
-    nonFieldErrors,
+    fieldErrors: fieldErrors || {},
+    nonFieldErrors: nonFieldErrors || [],
   })),
   on(AuthActions.logout, (state) => ({
     ...state,

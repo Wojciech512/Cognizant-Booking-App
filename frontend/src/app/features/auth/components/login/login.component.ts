@@ -50,6 +50,7 @@ import * as AuthActions from '../../state/auth.actions';
   ],
 })
 export class LoginComponent implements OnInit {
+  objectKeys = Object.keys;
   loginForm!: FormGroup;
   loading$!: Observable<boolean>;
   fieldErrors$!: Observable<Record<string, string[]>>;

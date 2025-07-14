@@ -4,31 +4,37 @@
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Username</mat-label>
       <input matInput type="text" formControlName="username" required />
-      <mat-error *ngIf="loginForm.get('username')?.hasError('required')">
-        Enter your username
-      </mat-error>
-      <mat-error *ngIf="loginForm.get('username')?.hasError('username')">
-        Please enter a valid username address
-      </mat-error>
-      <mat-error *ngIf="loginForm.get('username')?.hasError('server')">
-        {{ loginForm.get("username")?.getError("server") }}
+      <mat-error *ngIf="loginForm.get('username')?.errors as errors">
+        <ng-container *ngFor="let key of objectKeys(errors)">
+          <ng-container [ngSwitch]="key">
+            <span *ngSwitchCase="'required'">Enter your username</span>
+            <span *ngSwitchCase="'server'">{{ errors["server"] }}</span>
+          </ng-container>
+        </ng-container>
       </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Password</mat-label>
       <input matInput type="password" formControlName="password" required />
-      <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
-        Enter password
-      </mat-error>
-      <mat-error *ngIf="loginForm.get('password')?.hasError('server')">
-        {{ loginForm.get("password")?.getError("server") }}
+      <mat-error *ngIf="loginForm.get('password')?.errors as errors">
+        <ng-container *ngFor="let key of objectKeys(errors)">
+          <ng-container [ngSwitch]="key">
+            <span *ngSwitchCase="'required'">Enter password</span>
+            <span *ngSwitchCase="'server'">{{ errors["server"] }}</span>
+          </ng-container>
+        </ng-container>
       </mat-error>
     </mat-form-field>
 
-    <div class="error non-field" *ngIf="nonFieldErrors?.length">
-      <div *ngFor="let msg of nonFieldErrors">{{ msg }}</div>
-    </div>
+    <mat-error
+      *ngIf="(nonFieldErrors$ | async)?.length"
+      class="non-field-errors"
+    >
+      <span *ngFor="let err of nonFieldErrors$ | async">
+        {{ err }}
+      </span>
+    </mat-error>
 
     <div class="actions">
       <button

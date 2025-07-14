@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
   Validators,
+  ReactiveFormsModule,
   AbstractControl,
   ValidationErrors,
-  ReactiveFormsModule,
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { MatCard, MatCardModule } from '@angular/material/card';
@@ -18,11 +18,14 @@ import {
   MatLabel,
 } from '@angular/material/input';
 import { MatButton, MatButtonModule } from '@angular/material/button';
-import { Observable } from 'rxjs';
-import { selectAuthLoading } from '../../state/auth.selectors';
-import { AuthService } from '../../services/auth.service';
-import { ApiError } from '../../models/auth.models';
-import { Router } from '@angular/router';
+import { Observable, Subject, takeUntil } from 'rxjs';
+import {
+  selectAuthFieldErrors,
+  selectAuthLoading,
+  selectAuthNonFieldErrors,
+} from '../../state/auth.selectors';
+import { RegisterPayload } from '../../models/auth.models';
+import * as AuthActions from '../../state/auth.actions';
 
 @Component({
   selector: 'app-register',
@@ -47,57 +50,79 @@ import { Router } from '@angular/router';
     MatInputModule,
   ],
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit, OnDestroy {
+  objectKeys = Object.keys;
   registerForm!: FormGroup;
   loading$!: Observable<boolean>;
-  error$!: Observable<string | null>;
-  nonFieldErrors: string[] | undefined;
+  fieldErrors$!: Observable<Record<string, string[]>>;
+  nonFieldErrors$!: Observable<string[]>;
+  nonFieldErrors: string[] = [];
+
+  private destroy$ = new Subject<void>();
 
   constructor(
     private fb: FormBuilder,
     private store: Store,
-    private authService: AuthService,
-    private router: Router,
   ) {}
 
   ngOnInit(): void {
-    this.loading$ = this.store.select(selectAuthLoading);
-    // this.error$ = this.store.select(selectAuthError);
+    this.registerForm = this.fb.group({
+      username: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
+      password2: [
+        '',
+        [Validators.required, this.passwordMatchValidator.bind(this)],
+      ],
+    });
 
-    this.registerForm = this.fb.group(
-      {
-        username: ['', [Validators.required]],
-        email: ['', [Validators.required, Validators.email]],
-        password: ['', [Validators.required, Validators.minLength(6)]],
-        password2: ['', [Validators.required]],
-      },
-      { validators: this.passwordMatchValidator },
-    );
+    this.loading$ = this.store.select(selectAuthLoading);
+    this.fieldErrors$ = this.store.select(selectAuthFieldErrors);
+    this.nonFieldErrors$ = this.store.select(selectAuthNonFieldErrors);
+
+    this.fieldErrors$.pipe(takeUntil(this.destroy$)).subscribe((errors) => {
+      Object.keys(this.registerForm.controls).forEach((field) => {
+        this.registerForm.get(field)!.setErrors(null);
+      });
+      Object.entries(errors).forEach(([field, msgs]) => {
+        const control = this.registerForm.get(field);
+        if (control && msgs.length) {
+          control.setErrors({ server: msgs[0] });
+        }
+      });
+    });
+
+    this.nonFieldErrors$.pipe(takeUntil(this.destroy$)).subscribe((errs) => {
+      this.nonFieldErrors = errs;
+    });
+
+    this.registerForm
+      .get('password')!
+      .valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.registerForm.get('password2')!.updateValueAndValidity();
+      });
   }
 
-  passwordMatchValidator(form: AbstractControl): ValidationErrors | null {
-    const password: string = form.get('password')?.value;
-    const confirm: string = form.get('password2')?.value;
-    return password === confirm ? null : { passwordMismatch: true };
+  private passwordMatchValidator(
+    control: AbstractControl,
+  ): ValidationErrors | null {
+    if (!this.registerForm) return null;
+    const pass1 = this.registerForm.get('password')!.value;
+    const pass2 = control.value;
+    return pass1 === pass2 ? null : { passwordMismatch: true };
   }
 
   onSubmit(): void {
-    if (this.registerForm.invalid) return;
+    if (this.registerForm.invalid) {
+      return;
+    }
+    const payload: RegisterPayload = this.registerForm.value;
+    this.store.dispatch(AuthActions.register(payload));
+  }
 
-    this.authService.register(this.registerForm.value).subscribe({
-      next: () => this.router.navigate(['/login']),
-      error: (apiError: ApiError) => {
-        Object.keys(this.registerForm.controls).forEach((field) => {
-          this.registerForm.get(field)?.setErrors(null);
-        });
-        Object.entries(apiError.fieldErrors).forEach(([field, messages]) => {
-          const control = this.registerForm.get(field);
-          if (control) {
-            control.setErrors({ server: messages[0] });
-          }
-        });
-        this.nonFieldErrors = apiError.nonFieldErrors || [];
-      },
-    });
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

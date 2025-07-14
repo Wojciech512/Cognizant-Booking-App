@@ -5,7 +5,6 @@ import { of } from 'rxjs';
 import { exhaustMap, map, catchError, tap } from 'rxjs/operators';
 import * as AuthActions from './auth.actions';
 import { AuthService } from '../services/auth.service';
-import { LoginPayload, RegisterPayload } from '../models/auth.models';
 
 @Injectable()
 export class AuthEffects {
@@ -16,24 +15,32 @@ export class AuthEffects {
   register$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.register),
-      exhaustMap(({ username, email, password, password2 }: RegisterPayload) =>
+      exhaustMap(({ username, email, password, password2 }) =>
         this.authService
           .register({ username, email, password, password2 })
           .pipe(
             map(() => AuthActions.registerSuccess()),
-            tap(() => {
-              this.router.navigate(['/login']);
-            }),
-            catchError((error) =>
-              of(
+            catchError((error) => {
+              const payload = error || {};
+              return of(
                 AuthActions.registerFailure({
-                  error: error.error?.message || 'Registration failed',
+                  fieldErrors: payload.fieldErrors || {},
+                  nonFieldErrors: payload.nonFieldErrors || [],
                 }),
-              ),
-            ),
+              );
+            }),
           ),
       ),
     ),
+  );
+
+  registerRedirect$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActions.registerSuccess),
+        tap(() => this.router.navigate(['/login'])),
+      ),
+    { dispatch: false },
   );
 
   login$ = createEffect(() =>
@@ -47,14 +54,11 @@ export class AuthEffects {
             return AuthActions.loginSuccess({ token: response.access });
           }),
           catchError((error) => {
-            const nonField =
-              error.status === 401
-                ? ['Invalid email or password']
-                : ['Login failed'];
+            const payload = error || {};
             return of(
               AuthActions.loginFailure({
-                fieldErrors: {},
-                nonFieldErrors: nonField,
+                fieldErrors: payload.fieldErrors || {},
+                nonFieldErrors: payload.nonFieldErrors || [],
               }),
             );
           }),

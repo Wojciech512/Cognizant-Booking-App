@@ -7,13 +7,9 @@ export const selectAuthToken = createSelector(
   selectAuthState,
   (state) => state.token,
 );
-export const selectIsAuthenticated = createSelector(
-  selectAuthState,
-  (state) => state.isAuthenticated,
-);
 export const selectAuthLoading = createSelector(
   selectAuthState,
-  (state) => state.loading,
+  (s) => s.loading,
 );
 export const selectAuthFieldErrors = createSelector(
   selectAuthState,
@@ -22,4 +18,8 @@ export const selectAuthFieldErrors = createSelector(
 export const selectAuthNonFieldErrors = createSelector(
   selectAuthState,
   (s) => s.nonFieldErrors,
+);
+export const selectIsAuthenticated = createSelector(
+  selectAuthState,
+  (s) => s.isAuthenticated,
 );
