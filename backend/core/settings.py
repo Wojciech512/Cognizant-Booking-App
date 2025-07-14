@@ -2,15 +2,17 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
-# Ścieżka do katalogu głównego projektu
+import environ
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Wczytanie zmiennych środowiskowych
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "change-me")
-DEBUG = os.environ.get("DEBUG", "True") == "True"
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "*").split(",")
+env = environ.Env(DEBUG=(bool, False))
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
-# Aplikacje Django
+SECRET_KEY = env("SECRET_KEY")
+DEBUG = env("DEBUG")
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -67,20 +69,22 @@ ASGI_APPLICATION = "core.asgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("POSTGRES_DB"),
-        "USER": os.environ.get("POSTGRES_USER"),
-        "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
-        "HOST": os.environ.get("DB_HOST"),
-        "PORT": os.environ.get("DB_PORT"),
+        "NAME": env("POSTGRES_DB"),
+        "USER": env("POSTGRES_USER"),
+        "PASSWORD": env("POSTGRES_PASSWORD"),
+        "HOST": env("DB_HOST"),
+        "PORT": env("DB_PORT"),
     }
 }
 
 # Warstwa kanałów (przygotowanie dla RTU)
+REDIS_HOST = env("REDIS_HOST", default="redis")
+
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [(os.environ.get("REDIS_HOST", "redis"), 6379)],
+            "hosts": [(REDIS_HOST, 6379)],
         },
     },
 }
@@ -96,13 +100,12 @@ REST_FRAMEWORK = {
 }
 
 # Ustawienia Simple JWT
+ACCESS_TOKEN_LIFETIME = env.int("ACCESS_TOKEN_LIFETIME", default=60)
+REFRESH_TOKEN_LIFETIME = env.int("REFRESH_TOKEN_LIFETIME", default=1)
+
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(
-        minutes=int(os.environ.get("ACCESS_TOKEN_LIFETIME", 60))
-    ),
-    "REFRESH_TOKEN_LIFETIME": timedelta(
-        days=int(os.environ.get("REFRESH_TOKEN_LIFETIME", 1))
-    ),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=ACCESS_TOKEN_LIFETIME),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=REFRESH_TOKEN_LIFETIME),
 }
 
 # CORS – (w dewelopmencie otwarte dla wszystkich źródeł)
