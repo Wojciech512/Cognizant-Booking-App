@@ -12,7 +12,6 @@ bootstrapApplication(AppComponent, {
   providers: [
     provideHttpClient(),
     provideRouter(appRoutes),
-    provideEffects([AuthEffects]),
     provideStore({ auth: authReducer }),
     provideEffects([AuthEffects]),
   ],

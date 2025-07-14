@@ -12,13 +12,16 @@ export const registerFailure = createAction(
 );
 
 export const login = createAction('[Auth] Login', props<LoginPayload>());
+export const loginFailure = createAction(
+  '[Auth] Login Failure',
+  props<{
+    fieldErrors: Record<string, string[]>;
+    nonFieldErrors: string[];
+  }>(),
+);
 export const loginSuccess = createAction(
   '[Auth] Login Success',
   props<{ token: string }>(),
-);
-export const loginFailure = createAction(
-  '[Auth] Login Failure',
-  props<{ error: string }>(),
 );
 
 export const logout = createAction('[Auth] Logout');

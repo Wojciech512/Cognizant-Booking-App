@@ -19,7 +19,7 @@ import {
 } from '@angular/material/input';
 import { MatButton, MatButtonModule } from '@angular/material/button';
 import { Observable } from 'rxjs';
-import { selectAuthLoading, selectAuthError } from '../../state/auth.selectors';
+import { selectAuthLoading } from '../../state/auth.selectors';
 import { AuthService } from '../../services/auth.service';
 import { ApiError } from '../../models/auth.models';
 import { Router } from '@angular/router';
@@ -62,7 +62,7 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading$ = this.store.select(selectAuthLoading);
-    this.error$ = this.store.select(selectAuthError);
+    // this.error$ = this.store.select(selectAuthError);
 
     this.registerForm = this.fb.group(
       {

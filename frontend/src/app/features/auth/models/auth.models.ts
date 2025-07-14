@@ -25,7 +25,8 @@ export interface AuthState {
   token: string | null;
   isAuthenticated: boolean;
   loading: boolean;
-  error: string | null;
+  fieldErrors: Record<string, string[]>;
+  nonFieldErrors: string[];
 }
 
 export interface ApiError {

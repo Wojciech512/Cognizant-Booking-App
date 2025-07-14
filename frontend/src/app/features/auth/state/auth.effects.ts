@@ -10,11 +10,8 @@ import { LoginPayload, RegisterPayload } from '../models/auth.models';
 @Injectable()
 export class AuthEffects {
   private actions$ = inject(Actions);
-
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-  ) {}
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
   register$ = createEffect(() =>
     this.actions$.pipe(
@@ -42,23 +39,24 @@ export class AuthEffects {
   login$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.login),
-      exhaustMap(({ username, password }: LoginPayload) =>
+      exhaustMap(({ username, password }) =>
         this.authService.login({ username, password }).pipe(
           map((response) => {
             localStorage.setItem('token', response.access);
             localStorage.setItem('refreshToken', response.refresh!);
-
             return AuthActions.loginSuccess({ token: response.access });
           }),
-          tap(() => {
-            this.router.navigate(['/']);
-          }),
           catchError((error) => {
-            const errMsg =
+            const nonField =
               error.status === 401
-                ? 'Invalid email or password'
-                : 'Login failed';
-            return of(AuthActions.loginFailure({ error: errMsg }));
+                ? ['Invalid email or password']
+                : ['Login failed'];
+            return of(
+              AuthActions.loginFailure({
+                fieldErrors: {},
+                nonFieldErrors: nonField,
+              }),
+            );
           }),
         ),
       ),

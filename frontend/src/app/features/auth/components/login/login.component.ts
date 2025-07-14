@@ -16,12 +16,15 @@ import {
 import { MatCard, MatCardModule } from '@angular/material/card';
 import { MatButton } from '@angular/material/button';
 import { MatButtonModule } from '@angular/material/button';
-import { Observable } from 'rxjs';
-import { selectAuthLoading, selectAuthError } from '../../state/auth.selectors';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { ApiError } from '../../models/auth.models';
-import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import {
+  selectAuthLoading,
+  selectAuthFieldErrors,
+  selectAuthNonFieldErrors,
+} from '../../state/auth.selectors';
+import { LoginPayload } from '../../models/auth.models';
+import * as AuthActions from '../../state/auth.actions';
 
 @Component({
   selector: 'app-login',
@@ -49,44 +52,28 @@ import { Router } from '@angular/router';
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   loading$!: Observable<boolean>;
-  error$!: Observable<string | null>;
-  nonFieldErrors: string[] | undefined;
+  fieldErrors$!: Observable<Record<string, string[]>>;
+  nonFieldErrors$!: Observable<string[]>;
 
   constructor(
     private fb: FormBuilder,
     private store: Store,
-    private authService: AuthService,
-    private router: Router,
   ) {}
 
   ngOnInit(): void {
-    this.loading$ = this.store.select(selectAuthLoading);
-    this.error$ = this.store.select(selectAuthError);
-
     this.loginForm = this.fb.group({
-      username: ['', [Validators.required]],
-      password: ['', [Validators.required]],
+      username: ['', Validators.required],
+      password: ['', Validators.required],
     });
+
+    this.loading$ = this.store.select(selectAuthLoading);
+    this.fieldErrors$ = this.store.select(selectAuthFieldErrors);
+    this.nonFieldErrors$ = this.store.select(selectAuthNonFieldErrors);
   }
 
   onSubmit(): void {
     if (this.loginForm.invalid) return;
-
-    this.nonFieldErrors = [];
-    this.authService.login(this.loginForm.value).subscribe({
-      next: () => this.router.navigate(['/']),
-      error: (apiError: ApiError) => {
-        Object.keys(this.loginForm.controls).forEach((field) => {
-          this.loginForm.get(field)?.setErrors(null);
-        });
-        Object.entries(apiError.fieldErrors).forEach(([field, msgs]) => {
-          const control = this.loginForm.get(field);
-          if (control) {
-            control.setErrors({ server: msgs[0] });
-          }
-        });
-        this.nonFieldErrors = apiError.nonFieldErrors || [];
-      },
-    });
+    const payload: LoginPayload = this.loginForm.value;
+    this.store.dispatch(AuthActions.login(payload));
   }
 }
