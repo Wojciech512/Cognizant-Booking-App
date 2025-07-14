@@ -21,8 +21,6 @@ export const authReducer = createReducer(
   on(AuthActions.registerSuccess, (state) => ({
     ...state,
     loading: false,
-    fieldErrors: {},
-    nonFieldErrors: [],
   })),
   on(AuthActions.registerFailure, (state, { fieldErrors, nonFieldErrors }) => ({
     ...state,
@@ -42,7 +40,6 @@ export const authReducer = createReducer(
     token,
     isAuthenticated: true,
     loading: false,
-    error: null,
   })),
   on(AuthActions.loginFailure, (state, { fieldErrors, nonFieldErrors }) => ({
     ...state,
@@ -55,7 +52,6 @@ export const authReducer = createReducer(
     ...state,
     token: null,
     isAuthenticated: false,
-    error: null,
     loading: false,
   })),
 

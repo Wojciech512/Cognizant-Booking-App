@@ -35,10 +35,8 @@ import * as AuthActions from '../../state/auth.actions';
   imports: [
     AsyncPipe,
     MatLabel,
-    MatFormField,
     ReactiveFormsModule,
     MatInput,
-    MatLabel,
     MatFormField,
     MatCard,
     NgIf,

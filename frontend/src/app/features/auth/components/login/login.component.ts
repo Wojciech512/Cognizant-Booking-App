@@ -33,8 +33,6 @@ import * as AuthActions from '../../state/auth.actions';
   standalone: true,
   imports: [
     AsyncPipe,
-    MatLabel,
-    MatFormField,
     ReactiveFormsModule,
     MatInput,
     MatLabel,
