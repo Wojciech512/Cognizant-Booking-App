@@ -62,6 +62,8 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.store.dispatch(AuthActions.clearAuthErrors());
+
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required],

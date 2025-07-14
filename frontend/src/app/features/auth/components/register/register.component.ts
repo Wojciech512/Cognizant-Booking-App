@@ -66,6 +66,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.store.dispatch(AuthActions.clearAuthErrors());
+
     this.registerForm = this.fb.group({
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],

@@ -6,7 +6,7 @@
     <a mat-button routerLink="/login">Login</a>
     <a mat-button routerLink="/register">Registration</a>
   </ng-container>
-  <p>isAuthenticated: {{ isAuthenticated$ | async }}</p>
+
   <ng-template #loggedIn>
     <button mat-button color="warn" (click)="logout()">Logout</button>
   </ng-template>

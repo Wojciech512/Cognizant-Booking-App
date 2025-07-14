@@ -28,3 +28,5 @@ export const loginSuccess = createAction(
 );
 
 export const logout = createAction('[Auth] Logout');
+
+export const clearAuthErrors = createAction('[Auth] Clear Errors');
