@@ -67,25 +67,27 @@ export class AuthEffects {
     ),
   );
 
+  loginRedirect$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActions.loginSuccess),
+        tap(() => this.router.navigate([''])),
+      ),
+    { dispatch: false },
+  );
+
   logout$ = createEffect(
     () =>
       this.actions$.pipe(
         ofType(AuthActions.logout),
         exhaustMap(() => {
           const refresh = localStorage.getItem('refreshToken');
-          if (!refresh) {
-            return of(null);
-          }
+          if (!refresh) return of(null);
+
           return this.authService.logout(refresh).pipe(
-            tap(() => {
-              localStorage.removeItem('token');
-              localStorage.removeItem('refreshToken');
-              this.router.navigate(['/login']);
-            }),
+            tap(() => this.cleanupAfterLogout()),
             catchError(() => {
-              localStorage.removeItem('token');
-              localStorage.removeItem('refreshToken');
-              this.router.navigate(['/login']);
+              this.cleanupAfterLogout();
               return of(null);
             }),
           );
@@ -93,4 +95,10 @@ export class AuthEffects {
       ),
     { dispatch: false },
   );
+
+  private cleanupAfterLogout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+    this.router.navigate(['/login']);
+  }
 }
