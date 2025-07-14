@@ -110,6 +110,7 @@ SIMPLE_JWT = {
 
 # CORS – (w dewelopmencie otwarte dla wszystkich źródeł)
 CORS_ALLOW_ALL_ORIGINS = True
+# CORS_URLS_REGEX = r"^/api/.*$"
 
 # Międzynarodowe
 LANGUAGE_CODE = "en-us"

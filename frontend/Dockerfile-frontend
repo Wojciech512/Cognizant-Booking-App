@@ -1,6 +1,9 @@
 FROM node:lts-alpine AS dev
 
 WORKDIR /app
+
+RUN apk add --no-cache curl
+
 ENV PATH /app/node_modules/.bin:$PATH
 ENV CHOKIDAR_USEPOLLING=true
 ENV HOST=0.0.0.0

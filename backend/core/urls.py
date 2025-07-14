@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.http import HttpResponse
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
 from users.views import (
@@ -21,4 +22,5 @@ urlpatterns = [
     path("api/register/", RegisterUserView.as_view(), name="register"),
     path("api/logout/", LogoutView.as_view(), name="logout"),
     path("api/logout_all/", LogoutAllView.as_view(), name="logout_all"),
+    path("health/", lambda request: HttpResponse("Healthy")),
 ]
