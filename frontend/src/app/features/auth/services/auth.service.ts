@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import {
@@ -44,6 +48,12 @@ export class AuthService {
   }
 
   logout(refreshToken: string): Observable<void> {
-    return this.http.post<void>('/api/logout/', { refresh: refreshToken });
+    const access = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${access}`);
+    return this.http.post<void>(
+      '/api/logout/',
+      { refresh: refreshToken },
+      { headers },
+    );
   }
 }
