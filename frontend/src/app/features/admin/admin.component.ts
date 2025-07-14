@@ -8,3 +8,4 @@ import { Component } from '@angular/core';
   standalone: true,
 })
 export class AdminComponent {}
+// TODO podział na role admin/user - admin ma dodatkowo dostęp do widoku /admin...
