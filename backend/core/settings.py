@@ -25,7 +25,7 @@ INSTALLED_APPS = [
     "channels",
     # Domenowe
     "core",
-    "events",
+    "event_scheduler",
     "bookings",
 ]
 
