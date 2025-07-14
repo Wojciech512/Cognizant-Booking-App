@@ -29,18 +29,18 @@ urlpatterns = [
     path("api/register/", RegisterUserView.as_view(), name="register"),
     path("api/logout/", LogoutView.as_view(), name="logout"),
     path("api/logout_all/", LogoutAllView.as_view(), name="logout_all"),
-    path("categories/", CategoryListCreateView.as_view(), name="categories"),
+    path("api/categories/", CategoryListCreateView.as_view(), name="categories"),
     path(
-        "timeslots/", TimeSlotListCreateView.as_view(), name="timeslot-list"
+        "api/timeslots/", TimeSlotListCreateView.as_view(), name="timeslot-list"
     ),
     path(
-        "timeslots/<uuid:id>/",
+        "api/timeslots/<uuid:id>/",
         TimeSlotDeleteView.as_view(),
         name="timeslot-delete",
     ),
-    path("bookings/", BookingCreateView.as_view(), name="booking-create"),
+    path("api/bookings/", BookingCreateView.as_view(), name="booking-create"),
     path(
-        "bookings/<int:pk>/",
+        "api/bookings/<int:pk>/",
         BookingDeleteView.as_view(),
         name="booking-delete",
     ),
