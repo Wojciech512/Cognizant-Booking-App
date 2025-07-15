@@ -3,9 +3,8 @@ import { LoginComponent } from './features/auth/components/login/login.component
 import { RegisterComponent } from './features/auth/components/register/register.component';
 import { AuthGuard } from './features/auth/guards/auth.guard';
 import { AdminComponent } from './features/admin/components/admin.component';
-import { CalendarComponent } from './features/calendar/components/calendar.component';
 import { NoAuthGuard } from './features/auth/guards/no-auth.guard';
-import { IsStaffGuard} from './features/auth/guards/is-staff.guard';
+import { IsStaffGuard } from './features/auth/guards/is-staff.guard';
 
 export const appRoutes: Routes = [
   { path: 'login', canActivate: [NoAuthGuard], component: LoginComponent },
@@ -14,8 +13,22 @@ export const appRoutes: Routes = [
     canActivate: [NoAuthGuard],
     component: RegisterComponent,
   },
-  { path: 'calendar', canActivate: [AuthGuard], component: CalendarComponent },
-  { path: 'admin', canActivate: [AuthGuard, IsStaffGuard], component: AdminComponent },
+  {
+    path: 'calendar',
+    canActivate: [AuthGuard],
+    loadChildren: () =>
+      import('./features/calendar/calendar.module').then(
+        (module) => module.CalendarModule,
+      ),
+  },
+  {
+    path: 'admin',
+    canActivate: [AuthGuard, IsStaffGuard],
+    loadChildren: () =>
+      import('./features/admin/admin.module').then(
+        (module) => module.CalendarModule,
+      ),
+  },
   { path: '', redirectTo: 'calendar', pathMatch: 'full' },
   { path: '**', redirectTo: 'login', pathMatch: 'full' },
 ];
