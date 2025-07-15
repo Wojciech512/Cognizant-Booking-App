@@ -9,8 +9,7 @@
 
   <ng-template #loggedIn>
     <a mat-button routerLink="/calendar">Calendar</a>
-    <!--    TODO podział na role admin/user -->
-    <a mat-button routerLink="/admin">Admin</a>
+    <a mat-button routerLink="/admin" *ngIf="(isStaff$ | async)">Admin</a>
 
     <button
       mat-raised-button

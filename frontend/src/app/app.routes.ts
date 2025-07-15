@@ -5,6 +5,7 @@ import { AuthGuard } from './features/auth/guards/auth.guard';
 import { AdminComponent } from './features/admin/admin.component';
 import { CalendarComponent } from './features/calendar/calendar.component';
 import { NoAuthGuard } from './features/auth/guards/no-auth.guard';
+import { IsStaffGuard} from './features/auth/guards/is-staff.guard';
 
 export const appRoutes: Routes = [
   { path: 'login', canActivate: [NoAuthGuard], component: LoginComponent },
@@ -14,7 +15,7 @@ export const appRoutes: Routes = [
     component: RegisterComponent,
   },
   { path: 'calendar', canActivate: [AuthGuard], component: CalendarComponent },
-  { path: 'admin', canActivate: [AuthGuard], component: AdminComponent },
+  { path: 'admin', canActivate: [AuthGuard, IsStaffGuard], component: AdminComponent },
   { path: '', redirectTo: 'calendar', pathMatch: 'full' },
   { path: '**', redirectTo: 'login', pathMatch: 'full' },
 ];

@@ -7,7 +7,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Observable } from 'rxjs';
 import { logout } from '../auth/state/auth.actions';
-import { selectIsAuthenticated } from '../auth/state/auth.selectors';
+import {
+  selectIsAuthenticated,
+  selectIsStaff,
+} from '../auth/state/auth.selectors';
 
 @Component({
   selector: 'app-header',
@@ -24,9 +27,11 @@ import { selectIsAuthenticated } from '../auth/state/auth.selectors';
 })
 export class HeaderComponent {
   isAuthenticated$: Observable<boolean>;
+  isStaff$: Observable<boolean>;
 
   constructor(private store: Store) {
     this.isAuthenticated$ = this.store.select(selectIsAuthenticated);
+    this.isStaff$ = this.store.select(selectIsStaff);
   }
 
   logout() {

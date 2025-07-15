@@ -33,3 +33,8 @@ export interface ApiError {
   fieldErrors: Record<string, string[]>;
   nonFieldErrors?: string[];
 }
+
+export interface TokenPayload {
+  is_staff?: boolean
+  username?: string
+}
