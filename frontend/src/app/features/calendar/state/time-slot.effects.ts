@@ -1,16 +1,14 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { catchError, map, mergeMap, of } from 'rxjs';
 import { TimeSlotService } from '../services/time-slot.service';
 import * as TimeSlotActions from './time-slot.actions';
 import * as BookingActions from './booking.actions';
-import { catchError, map, mergeMap, of } from 'rxjs';
 
 @Injectable()
 export class TimeSlotEffects {
-  constructor(
-    private actions$: Actions,
-    private timeSlotService: TimeSlotService,
-  ) {}
+  private actions$ = inject(Actions);
+  private timeSlotService = inject(TimeSlotService);
 
   loadTimeSlots$ = createEffect(() =>
     this.actions$.pipe(
