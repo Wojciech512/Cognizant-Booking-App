@@ -1,9 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import {AsyncPipe, DatePipe, JsonPipe, NgForOf, NgIf, SlicePipe} from '@angular/common';
+import {
+  AsyncPipe,
+  DatePipe,
+  JsonPipe,
+  NgForOf,
+  NgIf,
+  SlicePipe,
+} from '@angular/common';
 import { MatButton, MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import {MatCheckbox} from '@angular/material/checkbox';
+import { MatCheckbox } from '@angular/material/checkbox';
 import { Observable } from 'rxjs';
 import { EventCategory } from '../models/event-category.model';
 import { TimeSlot } from '../models/time-slot.model';
@@ -37,7 +44,7 @@ import * as TimeSlotActions from '../state/time-slot/time-slot.actions';
     MatCheckbox,
     FilterPipe,
     CategoryColorPipe,
-    JsonPipe
+    JsonPipe,
   ],
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss'],
