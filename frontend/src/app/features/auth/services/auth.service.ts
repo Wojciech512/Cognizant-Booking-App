@@ -13,9 +13,11 @@ import {
   RegisterPayload,
   RegisterResponse,
 } from '../models/auth.models';
+import { environment } from '@env/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  private apiUrl = environment.apiUrl;
   constructor(private http: HttpClient) {}
 
   private handleApiError(error: HttpErrorResponse) {
@@ -37,13 +39,13 @@ export class AuthService {
 
   register(data: RegisterPayload): Observable<RegisterResponse> {
     return this.http
-      .post<RegisterResponse>('/api/users/register/', data)
+      .post<RegisterResponse>(`${this.apiUrl}/users/register/`, data)
       .pipe(catchError(this.handleApiError.bind(this)));
   }
 
   login(credentials: LoginPayload): Observable<LoginResponse> {
     return this.http
-      .post<LoginResponse>('/api/users/token/', credentials)
+      .post<LoginResponse>(`${this.apiUrl}/users/token/`, credentials)
       .pipe(catchError(this.handleApiError.bind(this)));
   }
 
@@ -51,7 +53,7 @@ export class AuthService {
     const access = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${access}`);
     return this.http.post<void>(
-      '/api/users/logout/',
+      `${this.apiUrl}/users/logout/`,
       { refresh: refreshToken },
       { headers },
     );
