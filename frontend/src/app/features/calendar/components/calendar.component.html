@@ -1,20 +1,35 @@
+<!--TODO wybieranie kategorii jest niepoprawnie zrobione na frontend-->
+<!--TODO sprawdzenie różnych kolorów dla kategorii - WERYFIKACJA PIPE -->
+<!--TODO obsłużenie wyjątków na backend -->
+<!--TODO implementacja widoku: Admin view where admins can add timeslots for given event category  -->
+<!--TODO implementacja widoku: Admin can view all timeslots and see if any user signed up for it -->
+<!--TODO stylizowanie -->
+
+<!--TODO do notatek obsłużenie błędów w snackbarach-->
+
 <div class="filters">
   <mat-checkbox
     *ngFor="let cat of (eventCategories$ | async)!"
     [checked]="selectedCategoryIds.includes(cat.id)"
-    (change)="onToggleCategory(cat.id, $event.checked)"
+    (change)="onToggleCategory(cat.id, !$event.checked)"
   >
     {{ cat.name }}
   </mat-checkbox>
 </div>
 
 <div class="week-navigation">
-  <button mat-button (click)="prevWeek()">&larr; Poprzedni tydzień</button>
+  <button mat-raised-button (click)="prevWeek()">
+    <mat-icon>arrow_back</mat-icon>
+    <span>Last week</span>
+  </button>
   <span class="week-label">
     {{ daysOfWeek[0] | date: "dd.MM.yyyy" }} -
     {{ daysOfWeek[6] | date: "dd.MM.yyyy" }}
   </span>
-  <button mat-button (click)="nextWeek()">Następny tydzień &rarr;</button>
+  <button mat-raised-button (click)="nextWeek()">
+    <span>Next week</span>
+    <mat-icon iconPositionEnd>arrow_forward</mat-icon>
+  </button>
 </div>
 
 <div class="calendar-table-container" *ngIf="timeSlots$ | async as timeSlots">
