@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, mergeMap, of } from 'rxjs';
-import { EventCategoryService } from '../services/event-category.service';
 import * as CategoryActions from './event-category.actions';
+import { EventCategoryService } from '../../services/event-category.service';
 
 @Injectable()
 export class EventCategoryEffects {

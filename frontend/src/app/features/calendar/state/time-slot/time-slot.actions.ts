@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
-import { TimeSlot } from '../models/time-slot.model';
-import { EventCategoryError } from '../models/event-category.model';
+import { TimeSlot } from '../../models/time-slot.model';
+import { EventCategoryError } from '../../models/event-category.model';
 
 export interface TimeSlotFilter {
   categoryIds?: number[];

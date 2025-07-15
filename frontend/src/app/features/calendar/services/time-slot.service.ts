@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TimeSlot } from '../models/time-slot.model';
-import { TimeSlotFilter } from '../state/time-slot.actions';
+import {TimeSlotFilter} from '../state/time-slot/time-slot.actions';
 import { environment } from '@env/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -14,7 +14,7 @@ export class TimeSlotService {
     let params = new HttpParams();
     if (filter) {
       if (filter.categoryIds && filter.categoryIds.length) {
-        filter.categoryIds.forEach((catId) => {
+        filter.categoryIds.forEach((catId: number) => {
           params = params.append('category', String(catId));
         });
       }

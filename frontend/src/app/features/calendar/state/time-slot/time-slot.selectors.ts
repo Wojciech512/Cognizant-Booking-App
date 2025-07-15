@@ -1,15 +1,15 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { TimeSlotState } from './time-slot.reducer';
+import { TimeSlotState } from '../../models/time-slot.model';
 
 export const selectTimeSlotState =
   createFeatureSelector<TimeSlotState>('timeSlots');
 
 export const selectAllTimeSlots = createSelector(
   selectTimeSlotState,
-  state => state.timeSlots
+  (state) => state.timeSlots,
 );
 
 export const selectSlotsLoading = createSelector(
   selectTimeSlotState,
-  state => state.loading
+  (state) => state.loading,
 );

@@ -1,5 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { EventCategoryState } from '../models/event-category.model';
+import { EventCategoryState } from '../../models/event-category.model';
 
 export const selectEventCategoriesState =
   createFeatureSelector<EventCategoryState>('eventCategories');

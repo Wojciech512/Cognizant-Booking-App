@@ -1,10 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import * as BookingActions from './booking.actions';
-import { EventCategoryError } from '../models/event-category.model';
+import { BookingState } from '../../models/booking.model';
 
-export interface BookingState {
-  error: EventCategoryError;
-}
 const initialState: BookingState = {
   error: null,
 };

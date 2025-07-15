@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
-import { Booking } from '../models/booking.model';
-import { EventCategoryError } from '../models/event-category.model';
+import { Booking } from '../../models/booking.model';
+import { EventCategoryError } from '../../models/event-category.model';
 
 export const createBooking = createAction(
   '[Booking] Create Booking',

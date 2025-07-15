@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, map, take } from 'rxjs';
-import { selectIsStaff} from '../state/auth.selectors';
+import { selectIsStaff } from '../state/auth.selectors';
 
 @Injectable({ providedIn: 'root' })
 export class IsStaffGuard implements CanActivate {

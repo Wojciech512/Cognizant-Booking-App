@@ -35,6 +35,6 @@ export interface ApiError {
 }
 
 export interface TokenPayload {
-  is_staff?: boolean
-  username?: string
+  is_staff?: boolean;
+  username?: string;
 }

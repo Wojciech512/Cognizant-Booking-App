@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import * as CategoryActions from './event-category.actions';
-import { EventCategoryState } from '../models/event-category.model';
+import { EventCategoryState } from '../../models/event-category.model';
 
 const initialState: EventCategoryState = {
   categories: [],

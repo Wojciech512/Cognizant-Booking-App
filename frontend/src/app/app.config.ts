@@ -12,9 +12,9 @@ import { AuthEffects } from './features/auth/state/auth.effects';
 import { storageSyncReducer } from './features/auth/state/storage.metareducer';
 import { appReducers } from './state/app.reducers';
 import { AuthInterceptor } from './features/auth/interceptors/auth.interceptor';
-import { EventCategoryEffects } from './features/calendar/state/event-category.effects';
-import { TimeSlotEffects } from './features/calendar/state/time-slot.effects';
-import { BookingEffects } from './features/calendar/state/booking.effects';
+import { EventCategoryEffects } from './features/calendar/state/event-category/event-category.effects';
+import { TimeSlotEffects } from './features/calendar/state/time-slot/time-slot.effects';
+import { BookingEffects } from './features/calendar/state/booking/booking.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [

@@ -1,14 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
-import { TimeSlot } from '../models/time-slot.model';
 import * as TimeSlotActions from './time-slot.actions';
-import { EventCategoryError } from '../models/event-category.model';
+import { TimeSlotState } from '../../models/time-slot.model';
 
-export interface TimeSlotState {
-  timeSlots: TimeSlot[];
-  loading: boolean;
-  filter: TimeSlotActions.TimeSlotFilter;
-  error: EventCategoryError;
-}
 const initialState: TimeSlotState = {
   timeSlots: [],
   loading: false,

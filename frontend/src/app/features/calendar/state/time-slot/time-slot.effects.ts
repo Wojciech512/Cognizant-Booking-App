@@ -1,9 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, mergeMap, of } from 'rxjs';
-import { TimeSlotService } from '../services/time-slot.service';
 import * as TimeSlotActions from './time-slot.actions';
-import * as BookingActions from './booking.actions';
+import * as BookingActions from '../booking/booking.actions';
+import { TimeSlotService } from '../../services/time-slot.service';
 
 @Injectable()
 export class TimeSlotEffects {

@@ -10,10 +10,8 @@ import { logout } from '../auth/state/auth.actions';
 import {
   selectIsAuthenticated,
   selectIsStaff,
-  selectTokenPayload,
   selectUsername,
 } from '../auth/state/auth.selectors';
-import { TokenPayload } from '../auth/models/auth.models';
 
 @Component({
   selector: 'app-header',
