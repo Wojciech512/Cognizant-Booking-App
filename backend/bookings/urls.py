@@ -1,5 +1,6 @@
 from django.urls import path
 from rest_framework import routers
+
 from bookings.views import BookingCreateView, BookingDeleteView
 
 routers = routers.SimpleRouter()
