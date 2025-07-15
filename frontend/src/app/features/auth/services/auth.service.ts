@@ -37,13 +37,13 @@ export class AuthService {
 
   register(data: RegisterPayload): Observable<RegisterResponse> {
     return this.http
-      .post<RegisterResponse>('/api/register/', data)
+      .post<RegisterResponse>('/api/users/register/', data)
       .pipe(catchError(this.handleApiError.bind(this)));
   }
 
   login(credentials: LoginPayload): Observable<LoginResponse> {
     return this.http
-      .post<LoginResponse>('/api/token/', credentials)
+      .post<LoginResponse>('/api/users/token/', credentials)
       .pipe(catchError(this.handleApiError.bind(this)));
   }
 
@@ -51,7 +51,7 @@ export class AuthService {
     const access = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${access}`);
     return this.http.post<void>(
-      '/api/logout/',
+      '/api/users/logout/',
       { refresh: refreshToken },
       { headers },
     );
