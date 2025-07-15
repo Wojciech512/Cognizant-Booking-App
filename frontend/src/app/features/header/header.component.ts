@@ -10,7 +10,10 @@ import { logout } from '../auth/state/auth.actions';
 import {
   selectIsAuthenticated,
   selectIsStaff,
+  selectTokenPayload,
+  selectUsername,
 } from '../auth/state/auth.selectors';
+import { TokenPayload } from '../auth/models/auth.models';
 
 @Component({
   selector: 'app-header',
@@ -28,10 +31,12 @@ import {
 export class HeaderComponent {
   isAuthenticated$: Observable<boolean>;
   isStaff$: Observable<boolean>;
+  username$: Observable<string | undefined>;
 
   constructor(private store: Store) {
     this.isAuthenticated$ = this.store.select(selectIsAuthenticated);
     this.isStaff$ = this.store.select(selectIsStaff);
+    this.username$ = this.store.select(selectUsername);
   }
 
   logout() {

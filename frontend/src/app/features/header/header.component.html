@@ -1,16 +1,28 @@
 <mat-toolbar color="primary" class="app-header">
   <span class="logo" routerLink="/">CognizantBookingApp</span>
+
   <span class="spacer"></span>
 
   <ng-container *ngIf="!(isAuthenticated$ | async); else loggedIn">
-    <a mat-button routerLink="/login">Login</a>
-    <a mat-button routerLink="/register">Registration</a>
+    <a mat-button routerLink="/register" class="text">Registration</a>
+    <button
+      mat-raised-button
+      color="warn"
+      class="logout-btn"
+      routerLink="/login"
+    >
+      <mat-icon class="logout-icon">login</mat-icon>
+      <span>Login</span>
+    </button>
   </ng-container>
 
   <ng-template #loggedIn>
-    <a mat-button routerLink="/calendar">Calendar</a>
-    <a mat-button routerLink="/admin" *ngIf="(isStaff$ | async)">Admin</a>
+    <a mat-button routerLink="/calendar" class="text">Calendar</a>
+    <a mat-button routerLink="/admin" class="text" *ngIf="isStaff$ | async"
+      >Admin</a
+    >
 
+    <span class="username">Hi, {{ username$ | async }}!</span>
     <button
       mat-raised-button
       color="warn"

@@ -33,9 +33,13 @@ export const selectTokenPayload = createSelector(
     } catch {
       return null;
     }
-  }
+  },
 );
 export const selectIsStaff = createSelector(
   selectTokenPayload,
-  payload => !!payload?.is_staff
+  (payload) => !!payload?.is_staff,
+);
+export const selectUsername = createSelector(
+  selectTokenPayload,
+  (payload) => payload?.username,
 );
