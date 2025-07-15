@@ -1,5 +1,8 @@
 import { createAction, props } from '@ngrx/store';
-import {EventCategory, EventCategoryError} from '../models/event-category.model';
+import {
+  EventCategory,
+  EventCategoryError,
+} from '../models/event-category.model';
 
 export const loadEventCategories = createAction(
   '[EventCategory] Load Categories',

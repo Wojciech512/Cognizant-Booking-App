@@ -6,21 +6,40 @@ import { catchError, map, mergeMap, of } from 'rxjs';
 
 @Injectable()
 export class EventCategoryEffects {
-  constructor(private actions$: Actions, private categoryService: EventCategoryService) {}
+  constructor(
+    private actions$: Actions,
+    private categoryService: EventCategoryService,
+  ) {}
 
-  loadCategories$ = createEffect(() => this.actions$.pipe(
-    ofType(CategoryActions.loadEventCategories),
-    mergeMap(() => this.categoryService.getAllCategories().pipe(
-      map(categories => CategoryActions.loadEventCategoriesSuccess({ categories })),
-      catchError(error => of(CategoryActions.loadEventCategoriesFailure({ error })))
-    ))
-  ));
+  loadCategories$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(CategoryActions.loadEventCategories),
+      mergeMap(() =>
+        this.categoryService.getAllCategories().pipe(
+          map((categories) =>
+            CategoryActions.loadEventCategoriesSuccess({ categories }),
+          ),
+          catchError((error) =>
+            of(CategoryActions.loadEventCategoriesFailure({ error })),
+          ),
+        ),
+      ),
+    ),
+  );
 
-  addCategory$ = createEffect(() => this.actions$.pipe(
-    ofType(CategoryActions.addEventCategory),
-    mergeMap(action => this.categoryService.createCategory(action.name).pipe(
-      map(newCategory => CategoryActions.addEventCategorySuccess({ category: newCategory })),
-      catchError(error => of(CategoryActions.addEventCategoryFailure({ error })))
-    ))
-  ));
+  addCategory$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(CategoryActions.addEventCategory),
+      mergeMap((action) =>
+        this.categoryService.createCategory(action.name).pipe(
+          map((newCategory) =>
+            CategoryActions.addEventCategorySuccess({ category: newCategory }),
+          ),
+          catchError((error) =>
+            of(CategoryActions.addEventCategoryFailure({ error })),
+          ),
+        ),
+      ),
+    ),
+  );
 }
