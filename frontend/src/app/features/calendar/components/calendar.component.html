@@ -1,1 +1,67 @@
-<p>calendar works!</p>
+<div class="filters">
+  <mat-checkbox
+    *ngFor="let cat of (eventCategories$ | async)!"
+    [checked]="selectedCategoryIds.includes(cat.id)"
+    (change)="onToggleCategory(cat.id, $event.checked)"
+  >
+    {{ cat.name }}
+  </mat-checkbox>
+</div>
+
+<div class="week-navigation">
+  <button mat-button (click)="prevWeek()">&larr; Poprzedni tydzień</button>
+  <span class="week-label">
+    {{ daysOfWeek[0] | date: "dd.MM.yyyy" }} -
+    {{ daysOfWeek[6] | date: "dd.MM.yyyy" }}
+  </span>
+  <button mat-button (click)="nextWeek()">Następny tydzień &rarr;</button>
+</div>
+
+<div class="calendar-table-container" *ngIf="timeSlots$ | async as timeSlots">
+  <table class="calendar-table mat-elevation-z1">
+    <thead>
+      <tr>
+        <th>Godzina</th>
+        <th *ngFor="let day of daysOfWeek">{{ day | date: "EEE dd.MM" }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let hour of hours">
+        <td class="hour-label">{{ hour }}:00</td>
+        <td *ngFor="let day of daysOfWeek" class="calendar-cell">
+          <ng-container
+            *ngFor="
+              let slot of timeSlots
+                | slice: 0 : timeSlots.length
+                | filter: slotMatchesCell : day : hour
+            "
+          >
+            <button
+              mat-stroked-button
+              [color]="slot.category | categoryColor"
+              [disabled]="slot.is_booked && !slot.booked_by_current_user"
+              (click)="onSlotClick(slot)"
+            >
+              <ng-container *ngIf="!slot.is_booked; else bookedTpl">
+                Zarezerwuj ({{ getCategoryName(slot.category) }},
+                {{ slot.start_dt | date: "HH:mm" }}-{{
+                  slot.end_dt | date: "HH:mm"
+                }})
+              </ng-container>
+              <ng-template #bookedTpl>
+                <span *ngIf="slot.booked_by_current_user; else takenTpl"
+                  >Anuluj: {{ slot.start_dt | date: "HH:mm" }}</span
+                >
+                <ng-template #takenTpl>Zajęte</ng-template>
+              </ng-template>
+            </button>
+          </ng-container>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div *ngIf="loadingSlots$ | async" class="loading-spinner">
+  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+</div>
