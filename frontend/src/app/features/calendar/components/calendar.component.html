@@ -1,20 +1,25 @@
 <!--TODO implementacja widoku: Admin view where admins can add timeslots for given event category  -->
 <!--TODO implementacja widoku: Admin can view all timeslots and see if any user signed up for it -->
 <!--TODO obsłużenie wyjątków na backend -->
-<!--TODO stylizowanie -->
 
 <!--TODO do notatek obsłużenie błędów w snackbarach-->
 <!--TODO do notatek - co dodać - redis, inne scope na dni- dni robocze, dni wolne, scope na 1 dzień-->
+<!--TODO do notatek - co dodać - RESPONSYWNOŚĆ!-->
+<!--TODO do notatek - co dodać - sticky heddery i sticky kolumn, może zamiana na mat-table!-->
 
 <div class="filters">
-  <mat-checkbox
-    *ngFor="let cat of (eventCategories$ | async)!; trackBy: trackByCategory"
-    [checked]="selectedCategoryIds.includes(cat.id)"
-    (change)="onToggleCategory(cat.id, $event.checked)"
-  >
-    {{ cat.name }}
-  </mat-checkbox>
-  <pre></pre>
+  <div class="filters-header">
+    <span>Filter category:</span>
+  </div>
+  <div class="filters-body">
+    <mat-checkbox
+      *ngFor="let cat of (eventCategories$ | async)!; trackBy: trackByCategory"
+      [checked]="selectedCategoryIds.includes(cat.id)"
+      (change)="onToggleCategory(cat.id, $event.checked)"
+    >
+      {{ cat.name }}
+    </mat-checkbox>
+  </div>
 </div>
 
 <div class="week-navigation">
@@ -33,50 +38,61 @@
 </div>
 
 <div class="calendar-table-container" *ngIf="timeSlots$ | async as timeSlots">
-  <table class="calendar-table mat-elevation-z1">
-    <thead>
-      <tr>
-        <th>Hour</th>
-        <th *ngFor="let day of daysOfWeek">{{ day | date: "EEE dd.MM" }}</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let hour of hours">
-        <td class="hour-label">{{ hour }}:00</td>
-        <td *ngFor="let day of daysOfWeek" class="calendar-cell">
-          <ng-container
-            *ngFor="
-              let slot of timeSlots
-                | slice: 0 : timeSlots.length
-                | filter: slotMatchesCell : day : hour
-            "
-          >
+  <mat-grid-list cols="8" rowHeight="2:1" gutterSize="0">
+    <mat-grid-tile>Hour/Day</mat-grid-tile>
+    <mat-grid-tile *ngFor="let day of daysOfWeek" [colspan]="1">
+      {{ day | date: "EEE dd.MM" }}
+    </mat-grid-tile>
+
+    <ng-container *ngFor="let hour of hours">
+      <mat-grid-tile [colspan]="1"> {{ hour }}:00 </mat-grid-tile>
+      <mat-grid-tile
+        *ngFor="let day of daysOfWeek"
+        [colspan]="1"
+        class="calendar-cell"
+      >
+        <ng-container
+          *ngIf="timeSlots | filter: slotMatchesCell : day : hour as cellSlots"
+        >
+          <ng-container *ngFor="let slot of cellSlots.slice(0, 5)">
             <button
-              mat-stroked-button
-              [style.backgroundColor]="slot.category | categoryColor"
+              mat-flat-button
+              [style.backgroundColor]="
+                slot.is_booked
+                  ? slot.booked_by_current_user
+                    ? 'red'
+                    : 'grey'
+                  : (slot.category | categoryColor)
+              "
+              [style.color]="
+                slot.is_booked && slot.booked_by_current_user
+                  ? 'white'
+                  : 'inherit'
+              "
               [disabled]="slot.is_booked && !slot.booked_by_current_user"
               (click)="onSlotClick(slot)"
             >
               <ng-container *ngIf="!slot.is_booked; else bookedTpl">
-                Book ({{ getCategoryName(slot.category) }},
-                {{ slot.start_dt | date: "HH:mm" }}-{{
-                  slot.end_dt | date: "HH:mm"
-                }})
+                Book: {{ getCategoryName(slot.category) }},<br />
+                {{ slot.start_dt | date: "HH:mm" }}
+                – {{ slot.end_dt | date: "HH:mm" }}
               </ng-container>
               <ng-template #bookedTpl>
-                <span *ngIf="slot.booked_by_current_user; else takenTpl"
-                  >Cancel: {{ slot.start_dt | date: "HH:mm" }}</span
-                >
+                <span *ngIf="slot.booked_by_current_user; else takenTpl">
+                  Cancel: {{ getCategoryName(slot.category) }},<br />
+                  {{ slot.start_dt | date: "HH:mm" }}
+                  – {{ slot.end_dt | date: "HH:mm" }}
+                </span>
                 <ng-template #takenTpl>Booked</ng-template>
               </ng-template>
             </button>
           </ng-container>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+        </ng-container>
+      </mat-grid-tile>
+    </ng-container>
+  </mat-grid-list>
 
-<div *ngIf="loadingSlots$ | async" class="loading-spinner">
-  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  <div *ngIf="loadingSlots$ | async" class="loading-spinner">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
 </div>

@@ -25,5 +25,5 @@ export const cancelBookingSuccess = createAction(
 );
 export const cancelBookingFailure = createAction(
   '[Booking] Cancel Booking Failure',
-  props<{ error: any }>(),
+  props<{ error: EventCategoryError }>(),
 );

@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { AsyncPipe, DatePipe, NgForOf, NgIf, SlicePipe } from '@angular/common';
+import { AsyncPipe, DatePipe, NgForOf, NgIf } from '@angular/common';
 import { MatButton, MatButtonModule } from '@angular/material/button';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { MatCheckbox } from '@angular/material/checkbox';
+import {
+  MatProgressSpinner,
+  MatProgressSpinnerModule,
+} from '@angular/material/progress-spinner';
+import { MatCheckbox, MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { Observable } from 'rxjs';
 import { EventCategory } from '../models/event-category.model';
@@ -21,6 +24,12 @@ import {
 import * as CategoryActions from '../state/event-category/event-category.actions';
 import * as BookingActions from '../state/booking/booking.actions';
 import * as TimeSlotActions from '../state/time-slot/time-slot.actions';
+import {
+  MatGridList,
+  MatGridListModule,
+  MatGridTile,
+} from '@angular/material/grid-list';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-calendar',
@@ -30,7 +39,6 @@ import * as TimeSlotActions from '../state/time-slot/time-slot.actions';
     DatePipe,
     NgForOf,
     NgIf,
-    SlicePipe,
     MatButton,
     MatButtonModule,
     MatProgressSpinner,
@@ -38,6 +46,12 @@ import * as TimeSlotActions from '../state/time-slot/time-slot.actions';
     FilterPipe,
     CategoryColorPipe,
     MatIconModule,
+    MatGridList,
+    MatGridTile,
+    MatCheckboxModule,
+    MatGridListModule,
+    MatCardModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss'],
@@ -139,10 +153,6 @@ export class CalendarComponent implements OnInit {
         }),
       );
     }
-  }
-
-  trackBySlot(index: number, slot: TimeSlot): string {
-    return slot.id;
   }
 
   slotMatchesCell(slot: TimeSlot, day: Date, hour: number): boolean {
