@@ -1,11 +1,10 @@
-<!--TODO wybieranie kategorii jest niepoprawnie zrobione na frontend-->
-<!--TODO sprawdzenie różnych kolorów dla kategorii - WERYFIKACJA PIPE -->
-<!--TODO obsłużenie wyjątków na backend -->
 <!--TODO implementacja widoku: Admin view where admins can add timeslots for given event category  -->
 <!--TODO implementacja widoku: Admin can view all timeslots and see if any user signed up for it -->
+<!--TODO obsłużenie wyjątków na backend -->
 <!--TODO stylizowanie -->
 
 <!--TODO do notatek obsłużenie błędów w snackbarach-->
+<!--TODO do notatek - co dodać - redis, inne scope na dni- dni robocze, dni wolne, scope na 1 dzień-->
 
 <div class="filters">
   <mat-checkbox
@@ -54,7 +53,7 @@
           >
             <button
               mat-stroked-button
-              [color]="slot.category | categoryColor"
+              [style.backgroundColor]="slot.category | categoryColor"
               [disabled]="slot.is_booked && !slot.booked_by_current_user"
               (click)="onSlotClick(slot)"
             >
