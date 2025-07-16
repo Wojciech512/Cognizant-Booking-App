@@ -9,12 +9,13 @@
 
 <div class="filters">
   <mat-checkbox
-    *ngFor="let cat of (eventCategories$ | async)!"
+    *ngFor="let cat of (eventCategories$ | async)!; trackBy: trackByCategory"
     [checked]="selectedCategoryIds.includes(cat.id)"
-    (change)="onToggleCategory(cat.id, !$event.checked)"
+    (change)="onToggleCategory(cat.id, $event.checked)"
   >
     {{ cat.name }}
   </mat-checkbox>
+  <pre></pre>
 </div>
 
 <div class="week-navigation">
@@ -36,7 +37,7 @@
   <table class="calendar-table mat-elevation-z1">
     <thead>
       <tr>
-        <th>Godzina</th>
+        <th>Hour</th>
         <th *ngFor="let day of daysOfWeek">{{ day | date: "EEE dd.MM" }}</th>
       </tr>
     </thead>
@@ -58,16 +59,16 @@
               (click)="onSlotClick(slot)"
             >
               <ng-container *ngIf="!slot.is_booked; else bookedTpl">
-                Zarezerwuj ({{ getCategoryName(slot.category) }},
+                Book ({{ getCategoryName(slot.category) }},
                 {{ slot.start_dt | date: "HH:mm" }}-{{
                   slot.end_dt | date: "HH:mm"
                 }})
               </ng-container>
               <ng-template #bookedTpl>
                 <span *ngIf="slot.booked_by_current_user; else takenTpl"
-                  >Anuluj: {{ slot.start_dt | date: "HH:mm" }}</span
+                  >Cancel: {{ slot.start_dt | date: "HH:mm" }}</span
                 >
-                <ng-template #takenTpl>Zajęte</ng-template>
+                <ng-template #takenTpl>Booked</ng-template>
               </ng-template>
             </button>
           </ng-container>

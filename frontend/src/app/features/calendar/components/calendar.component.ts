@@ -99,9 +99,13 @@ export class CalendarComponent implements OnInit {
     this.store.dispatch(TimeSlotActions.loadTimeSlots({ filter }));
   }
 
+  trackByCategory(_: number, cat: EventCategory): number {
+    return cat.id;
+  }
+
   onToggleCategory(categoryId: number, checked: boolean): void {
     if (checked) {
-      this.selectedCategoryIds.push(categoryId);
+      this.selectedCategoryIds = [...this.selectedCategoryIds, categoryId];
     } else {
       this.selectedCategoryIds = this.selectedCategoryIds.filter(
         (id) => id !== categoryId,
