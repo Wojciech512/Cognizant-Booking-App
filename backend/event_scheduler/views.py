@@ -12,7 +12,7 @@ from .serializers import (
 class CategoryListCreateView(generics.ListCreateAPIView):
     queryset = EventCategory.objects.all()
     serializer_class = EventCategorySerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         if not request.user.is_staff:

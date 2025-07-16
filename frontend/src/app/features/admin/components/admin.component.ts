@@ -78,6 +78,7 @@ export class AdminComponent implements OnInit {
       this.slotForm.reset();
     }
   }
+
   getCategoryName(categoryId: number): string {
     const cat = this.categories.find((c) => c.id === categoryId);
     return cat ? cat.name : '';

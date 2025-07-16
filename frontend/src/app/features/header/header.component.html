@@ -17,10 +17,10 @@
   </ng-container>
 
   <ng-template #loggedIn>
-    <a mat-button routerLink="/calendar" class="text">Calendar</a>
-    <a mat-button routerLink="/admin" class="text" *ngIf="isStaff$ | async"
-      >Admin</a
-    >
+    <ng-container *ngIf="isStaff$ | async">
+      <a mat-button routerLink="/calendar" class="text">Calendar</a>
+      <a mat-button routerLink="/admin" class="text">Admin</a>
+    </ng-container>
 
     <span class="username">Hi, {{ username$ | async }}!</span>
     <button

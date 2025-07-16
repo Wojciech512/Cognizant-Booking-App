@@ -1,4 +1,4 @@
-<table mat-table [dataSource]="(timeSlots$ | async) || []" class="mat-elevation-z8">
+<table mat-table [dataSource]="(timeSlots$ | async) || []">
   <ng-container matColumnDef="start">
     <th mat-header-cell *matHeaderCellDef>Start</th>
     <td mat-cell *matCellDef="let s">
@@ -32,3 +32,17 @@
 
 <!--TODO wyświetlenie listy wszystkich timeSlotów i przypisanych do nich użytkowników-->
 <!--TODO administratorzy mogą dodawać timeslots dla danej kategorii wydarzeń. -->
+
+<!--TODO implementacja widoku: Admin view where admins can add timeslots for given event category  -->
+<!--TODO obsłużenie wyjątków na backend -->
+<!-- TODO obsłużenie błędów na frontend gdy serwer backend nieodpowiada, powiadomienia dla użytkownika w postaci snackbarów-->
+<!--TODO dokumentacja w kodzie i poza nim-->
+<!--TODO testy jednostkowe-->
+
+<!--TODO implementacja redis - dynamiczna zmiana dostępności timeslotów w aplikacji-->
+<!--TODO dodanie widoków alternatywnych gdy nie ma danych lub token logowania użytkownika wygasł-->
+<!--TODO automatyczny logout i przekierowanie do panelu logowania-->
+<!--TODO do notatek obsłużenie błędów w snackbarach-->
+<!--TODO do notatek - co dodać - redis, inne scope na dni- dni robocze, dni wolne, scope na 1 dzień-->
+<!--TODO do notatek - co dodać - RESPONSYWNOŚĆ!-->
+<!--TODO do notatek - co dodać - sticky heddery i sticky kolumn, może zamiana na mat-table!-->
