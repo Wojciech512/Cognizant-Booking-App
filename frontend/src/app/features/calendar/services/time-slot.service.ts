@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TimeSlot } from '../models/time-slot.model';
-import {TimeSlotFilter} from '../state/time-slot/time-slot.actions';
+import { TimeSlotFilter } from '../state/time-slot/time-slot.actions';
 import { environment } from '@env/environment';
 
 @Injectable({ providedIn: 'root' })

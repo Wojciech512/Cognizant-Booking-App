@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Store } from '@ngrx/store';
 import {
   addTimeSlot,
@@ -17,12 +22,20 @@ import {
   MatRowDef,
   MatTable,
 } from '@angular/material/table';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe, DatePipe, NgForOf } from '@angular/common';
 import { EventCategory } from '../../calendar/models/event-category.model';
 import { Observable } from 'rxjs';
 import { selectAllCategories } from '../../calendar/state/event-category/event-category.selectors';
-import {TimeSlot} from '../../calendar/models/time-slot.model';
-import {selectAllTimeSlots} from '../../calendar/state/time-slot/time-slot.selectors';
+import {
+  CreateTimeSlot,
+  TimeSlot,
+} from '../../calendar/models/time-slot.model';
+import { selectAllTimeSlots } from '../../calendar/state/time-slot/time-slot.selectors';
+import { MatButton } from '@angular/material/button';
+import { MatFormField, MatInput, MatLabel } from '@angular/material/input';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import { loadEventCategories } from '../../calendar/state/event-category/event-category.actions';
 
 @Component({
   selector: 'app-admin',
@@ -39,6 +52,17 @@ import {selectAllTimeSlots} from '../../calendar/state/time-slot/time-slot.selec
     MatRowDef,
     AsyncPipe,
     DatePipe,
+    MatFormField,
+    MatLabel,
+    MatFormField,
+    MatButton,
+    ReactiveFormsModule,
+    MatFormField,
+    MatInput,
+    MatFormField,
+    MatSelect,
+    MatOption,
+    NgForOf,
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.scss',
@@ -49,20 +73,16 @@ export class AdminComponent implements OnInit {
   eventCategories$: Observable<EventCategory[]>;
   timeSlots$: Observable<TimeSlot[]>;
 
-  private categories: EventCategory[] = [];
-
   constructor(
     private fb: FormBuilder,
     private store: Store,
   ) {
     this.eventCategories$ = this.store.select(selectAllCategories);
     this.timeSlots$ = this.store.select(selectAllTimeSlots);
-
-    this.eventCategories$.subscribe((cats) => (this.categories = cats));
-
   }
 
   ngOnInit(): void {
+    this.store.dispatch(loadEventCategories());
     this.store.dispatch(loadTimeSlots({ filter: {} }));
 
     this.slotForm = this.fb.group({
@@ -74,13 +94,25 @@ export class AdminComponent implements OnInit {
 
   onAdd() {
     if (this.slotForm.valid) {
-      this.store.dispatch(addTimeSlot({ timeSlot: this.slotForm.value }));
+      const value: CreateTimeSlot = this.slotForm.value;
+      this.store.dispatch(
+        addTimeSlot({
+          timeSlot: {
+            start_dt: value.start_dt,
+            end_dt: value.end_dt,
+            category: value.category,
+          },
+        }),
+      );
       this.slotForm.reset();
     }
   }
-
+  // TODO do poprawy
   getCategoryName(categoryId: number): string {
-    const cat = this.categories.find((c) => c.id === categoryId);
-    return cat ? cat.name : '';
+    this.eventCategories$.subscribe((cats) => {
+      const cat = cats.find((c) => c.id === categoryId);
+      return cat ? cat.name : '';
+    });
+    return '';
   }
 }

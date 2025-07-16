@@ -5,14 +5,19 @@ export interface TimeSlot {
   id: string;
   start_dt: string;
   end_dt: string;
-  is_booked: boolean;
+  is_booked?: boolean;
   category: number;
   booked_by_current_user?: boolean;
   my_booking_id?: number;
   booking?: {
-    user: string
-    booked_at: string
-  }
+    user: string;
+    booked_at: string;
+  };
+}
+export interface CreateTimeSlot {
+  start_dt: string;
+  end_dt: string;
+  category: number;
 }
 
 export interface TimeSlotState {

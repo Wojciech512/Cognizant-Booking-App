@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { TimeSlot } from '../../models/time-slot.model';
+import { CreateTimeSlot, TimeSlot } from '../../models/time-slot.model';
 import { EventCategoryError } from '../../models/event-category.model';
 
 export interface TimeSlotFilter {
@@ -23,7 +23,7 @@ export const loadTimeSlotsFailure = createAction(
 
 export const addTimeSlot = createAction(
   '[TimeSlot] Add TimeSlot (Admin)',
-  props<{ timeSlot: { start_dt: string; end_dt: string; category: number } }>(),
+  props<{ timeSlot: CreateTimeSlot }>(),
 );
 export const addTimeSlotSuccess = createAction(
   '[TimeSlot] Add TimeSlot Success',
