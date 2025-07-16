@@ -1,1 +1,34 @@
-<p>admin works!</p>
+<table mat-table [dataSource]="(timeSlots$ | async) || []" class="mat-elevation-z8">
+  <ng-container matColumnDef="start">
+    <th mat-header-cell *matHeaderCellDef>Start</th>
+    <td mat-cell *matCellDef="let s">
+      {{ s.start_dt | date: "yyyy-MM-dd HH:mm" }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="category">
+    <th mat-header-cell *matHeaderCellDef>Category</th>
+    <td mat-cell *matCellDef="let s">{{ getCategoryName(s.category) }}</td>
+  </ng-container>
+  <ng-container matColumnDef="user">
+    <th mat-header-cell *matHeaderCellDef>Users</th>
+    <td mat-cell *matCellDef="let s">{{ s.booking?.user || "-" }}</td>
+  </ng-container>
+  <ng-container matColumnDef="bookedAt">
+    <th mat-header-cell *matHeaderCellDef>Bookings at</th>
+    <td mat-cell *matCellDef="let s">
+      {{ s.booking?.booked_at | date: "HH:mm dd.MM.yyyy" }}
+    </td>
+  </ng-container>
+
+  <tr
+    mat-header-row
+    *matHeaderRowDef="['start', 'category', 'user', 'bookedAt']"
+  ></tr>
+  <tr
+    mat-row
+    *matRowDef="let row; columns: ['start', 'category', 'user', 'bookedAt']"
+  ></tr>
+</table>
+
+<!--TODO wyświetlenie listy wszystkich timeSlotów i przypisanych do nich użytkowników-->
+<!--TODO administratorzy mogą dodawać timeslots dla danej kategorii wydarzeń. -->
