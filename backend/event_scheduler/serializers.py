@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from bookings.serializers import BookingSerializer
+
 from .models import EventCategory, TimeSlot
 
 
@@ -15,6 +17,7 @@ class TimeSlotSerializer(serializers.ModelSerializer):
     )
     booked_by_current_user = serializers.SerializerMethodField()
     my_booking_id = serializers.SerializerMethodField()
+    booking = BookingSerializer(read_only=True)
 
     class Meta:
         model = TimeSlot
@@ -26,6 +29,7 @@ class TimeSlotSerializer(serializers.ModelSerializer):
             "category",
             "booked_by_current_user",
             "my_booking_id",
+            "booking",
         ]
 
     def get_booked_by_current_user(self, obj):

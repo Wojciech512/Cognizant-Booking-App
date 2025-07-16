@@ -8,12 +8,13 @@ class BookingSerializer(serializers.ModelSerializer):
     timeslot = serializers.PrimaryKeyRelatedField(
         queryset=TimeSlot.objects.all()
     )
-    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    user = serializers.StringRelatedField(read_only=True)
+    username = serializers.CharField(source="user.username", read_only=True)
 
     class Meta:
         model = Booking
-        fields = ["id", "timeslot", "user", "booked_at"]
-        read_only_fields = ["user", "booked_at"]
+        fields = ["id", "timeslot", "user", "booked_at", "username"]
+        read_only_fields = ["user", "booked_at", "username"]
 
     def create(self, validated_data):
         user = self.context["request"].user

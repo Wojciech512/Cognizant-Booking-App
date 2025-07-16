@@ -9,6 +9,10 @@ export interface TimeSlot {
   category: number;
   booked_by_current_user?: boolean;
   my_booking_id?: number;
+  booking?: {
+    user: string
+    booked_at: string
+  }
 }
 
 export interface TimeSlotState {

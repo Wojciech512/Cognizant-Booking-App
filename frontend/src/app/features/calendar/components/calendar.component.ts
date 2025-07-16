@@ -30,6 +30,7 @@ import {
   MatGridTile,
 } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
+import { selectIsStaff } from '../../auth/state/auth.selectors';
 
 @Component({
   selector: 'app-calendar',
@@ -61,6 +62,7 @@ export class CalendarComponent implements OnInit {
   timeSlots$: Observable<TimeSlot[]>;
   loadingSlots$: Observable<boolean>;
   loadingCategories$: Observable<boolean>;
+  isStaff$: Observable<boolean>;
 
   private categories: EventCategory[] = [];
 
@@ -74,6 +76,7 @@ export class CalendarComponent implements OnInit {
     this.loadingCategories$ = this.store.select(selectCategoriesLoading);
     this.timeSlots$ = this.store.select(selectAllTimeSlots);
     this.loadingSlots$ = this.store.select(selectSlotsLoading);
+    this.isStaff$ = this.store.select(selectIsStaff);
 
     this.eventCategories$.subscribe((cats) => (this.categories = cats));
 

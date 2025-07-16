@@ -1,7 +1,9 @@
 <!--TODO implementacja widoku: Admin view where admins can add timeslots for given event category  -->
-<!--TODO implementacja widoku: Admin can view all timeslots and see if any user signed up for it -->
 <!--TODO obsłużenie wyjątków na backend -->
+<!--TODO dokumentacja w kodzie i poza nim-->
+<!--TODO testy jednostkowe-->
 
+<!--TODO automatyczny logout i przekierowanie do panelu logowania-->
 <!--TODO do notatek obsłużenie błędów w snackbarach-->
 <!--TODO do notatek - co dodać - redis, inne scope na dni- dni robocze, dni wolne, scope na 1 dzień-->
 <!--TODO do notatek - co dodać - RESPONSYWNOŚĆ!-->
@@ -83,7 +85,18 @@
                   {{ slot.start_dt | date: "HH:mm" }}
                   – {{ slot.end_dt | date: "HH:mm" }}
                 </span>
-                <ng-template #takenTpl>Booked</ng-template>
+                <ng-template #takenTpl>
+                  <span *ngIf="!(isStaff$ | async); else bookInfoTpl"
+                    >Booked!</span
+                  >
+                  <ng-template #bookInfoTpl>
+                    <span>
+                      Booked by: {{ slot.booking?.user }} <br />
+                      at
+                      {{ slot.booking?.booked_at | date: "HH:mm dd.MM.yyyy" }}
+                    </span>
+                  </ng-template>
+                </ng-template>
               </ng-template>
             </button>
           </ng-container>
