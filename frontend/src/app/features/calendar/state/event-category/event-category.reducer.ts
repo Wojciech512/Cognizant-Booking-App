@@ -2,6 +2,13 @@ import { createReducer, on } from '@ngrx/store';
 import * as CategoryActions from './event-category.actions';
 import { EventCategoryState } from '../../models/event-category.model';
 
+/**
+ * Reducer for event-category state: stores array and loading flag.
+ *
+ * Context:
+ * - Updates state on load success/failure.
+ */
+
 const initialState: EventCategoryState = {
   categories: [],
   loading: false,

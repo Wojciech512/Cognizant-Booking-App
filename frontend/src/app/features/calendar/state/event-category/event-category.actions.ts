@@ -4,6 +4,13 @@ import {
   EventCategoryError,
 } from '../../models/event-category.model';
 
+/**
+ * NgRx actions for event categories: load list from backend.
+ *
+ * Context:
+ * - Initiates and handles success/failure of fetching categories.
+ */
+
 export const loadEventCategories = createAction(
   '[EventCategory] Load Categories',
 );

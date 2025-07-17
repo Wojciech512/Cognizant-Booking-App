@@ -4,6 +4,13 @@ import { catchError, map, mergeMap, of } from 'rxjs';
 import * as CategoryActions from './event-category.actions';
 import { EventCategoryService } from '../../services/event-category.service';
 
+/**
+ * Side-effects for event-category actions: fetches data via service.
+ *
+ * Context:
+ * - On load action, calls EventCategoryService and dispatches success/failure.
+ */
+
 @Injectable()
 export class EventCategoryEffects {
   private actions$ = inject(Actions);
