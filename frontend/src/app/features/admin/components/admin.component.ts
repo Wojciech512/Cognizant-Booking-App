@@ -72,6 +72,9 @@ export class AdminComponent implements OnInit {
   slotForm!: FormGroup;
   eventCategories$: Observable<EventCategory[]>;
   timeSlots$: Observable<TimeSlot[]>;
+  minStart: string;
+  start0: string;
+  end0: string;
 
   constructor(
     private fb: FormBuilder,
@@ -79,6 +82,13 @@ export class AdminComponent implements OnInit {
   ) {
     this.eventCategories$ = this.store.select(selectAllCategories);
     this.timeSlots$ = this.store.select(selectAllTimeSlots);
+
+    const now = new Date();
+    this.start0 = this.formatLocal(now);
+    this.end0 = this.addHourLocal(this.start0);
+    const isoDate = now.toISOString().slice(0, 10);
+    const hour = now.getHours().toString().padStart(2, '0');
+    this.minStart = `${isoDate}T${hour}:00`;
   }
 
   ngOnInit(): void {
@@ -86,9 +96,14 @@ export class AdminComponent implements OnInit {
     this.store.dispatch(loadTimeSlots({ filter: {} }));
 
     this.slotForm = this.fb.group({
-      start_dt: ['', Validators.required],
-      end_dt: ['', Validators.required],
+      start_dt: [this.start0, Validators.required],
+      end_dt: [{ value: this.end0, disabled: true }, Validators.required],
       category: ['', Validators.required],
+    });
+
+    this.slotForm.get('start_dt')!.valueChanges.subscribe((val) => {
+      const next = this.addHourLocal(val);
+      this.slotForm.get('end_dt')!.setValue(next, { emitEvent: false });
     });
   }
 
@@ -107,6 +122,7 @@ export class AdminComponent implements OnInit {
       this.slotForm.reset();
     }
   }
+
   // TODO do poprawy
   getCategoryName(categoryId: number): string {
     this.eventCategories$.subscribe((cats) => {
@@ -114,5 +130,22 @@ export class AdminComponent implements OnInit {
       return cat ? cat.name : '';
     });
     return '';
+  }
+
+  private formatLocal(date: Date): string {
+    const pad = (n: number) => n.toString().padStart(2, '0');
+
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1);
+    const day = pad(date.getDate());
+    const hour = pad(date.getHours());
+
+    return `${year}-${month}-${day}T${hour}:00`;
+  }
+
+  private addHourLocal(isoLocal: string): string {
+    const dt = new Date(isoLocal);
+    dt.setHours(dt.getHours() + 1);
+    return this.formatLocal(dt);
   }
 }
