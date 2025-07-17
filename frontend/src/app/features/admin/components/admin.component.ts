@@ -37,6 +37,16 @@ import {
 import { selectAllTimeSlots } from '../../calendar/state/time-slot/time-slot.selectors';
 import { loadEventCategories } from '../../calendar/state/event-category/event-category.actions';
 
+/**
+ * Main admin UI component for managing time slots.
+ *
+ * Context:
+ * - Fetches event categories and existing slots via NgRx on init.
+ * - Builds a reactive form to add new slots (date, time, category).
+ * - Provides utility functions to map category IDs to names.
+ * - Dispatches load/add actions to the store and resets the form.
+ */
+
 @Component({
   selector: 'app-admin',
   imports: [
