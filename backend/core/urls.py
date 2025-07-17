@@ -7,5 +7,5 @@ urlpatterns = [
     path("api/bookings/", include("bookings.urls")),
     path("api/users/", include("users.urls")),
     path("api/event_scheduler/", include("event_scheduler.urls")),
-    path("health/", lambda request: HttpResponse("Healthy")),
+    path("api/health/", lambda request: HttpResponse("Healthy")),
 ]
