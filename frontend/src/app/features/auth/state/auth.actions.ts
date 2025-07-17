@@ -1,3 +1,11 @@
+/**
+ * NgRx action definitions for authentication flows.
+ *
+ * Context:
+ * - Exposes actions for register, login, logout and error handling.
+ * - Uses concise action creators with typed props for payload validation.
+ */
+
 import { createAction, props } from '@ngrx/store';
 import { LoginPayload, RegisterPayload } from '../models/auth.models';
 

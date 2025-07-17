@@ -15,6 +15,15 @@ import {
 } from '../models/auth.models';
 import { environment } from '@env/environment';
 
+/**
+ * Service encapsulating REST calls for user authentication.
+ *
+ * Context:
+ * - Uses Angular HttpClient to hit `/users/register/`, `/users/token/`, `/users/logout/`.
+ * - Centralizes error handling: maps HttpErrorResponse into normalized ApiError.
+ * - Reads `environment.apiUrl` for base URL and sets auth headers on logout.
+ */
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private apiUrl = environment.apiUrl;

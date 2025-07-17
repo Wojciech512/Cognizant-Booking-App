@@ -1,3 +1,13 @@
+/**
+ * Side-effect handlers for auth actions, managing HTTP calls and navigation.
+ *
+ * Context:
+ * - Listens for register/login actions to call AuthService.
+ * - On success, dispatches success actions and navigates (login→home, register→login).
+ * - On failure, captures API errors into failure actions.
+ * - Handles logout by calling API, clearing tokens, and redirecting to login.
+ */
+
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';

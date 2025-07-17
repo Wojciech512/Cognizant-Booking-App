@@ -7,6 +7,14 @@ import {
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+/**
+ * HTTP interceptor to append JWT auth header to outgoing requests.
+ *
+ * Context:
+ * - Reads `token` from localStorage.
+ * - Clones each HttpRequest, adding `Authorization: Bearer <token>` when present.
+ */
+
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   intercept(

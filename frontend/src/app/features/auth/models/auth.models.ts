@@ -1,3 +1,12 @@
+/**
+ * Domain types for authentication feature.
+ *
+ * Context:
+ * - Defines payloads for login/register HTTP calls and the shape of API responses.
+ * - Describes AuthState stored in NgRx, as well as a normalized ApiError type.
+ * - TokenPayload interface matches decoded JWT structure (e.g. user role flags).
+ */
+
 export interface RegisterResponse {
   id: number;
   email: string;

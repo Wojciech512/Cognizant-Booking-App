@@ -1,3 +1,12 @@
+
+/**
+ * Reducer managing AuthState in response to auth actions.
+ *
+ * Context:
+ * - Tracks token, loading flags, authentication status, and error payloads.
+ * - Resets error fields on each new attempt; clears state on logout.
+ */
+
 import { createReducer, on } from '@ngrx/store';
 import * as AuthActions from './auth.actions';
 import { AuthState } from '../models/auth.models';

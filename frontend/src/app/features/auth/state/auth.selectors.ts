@@ -1,3 +1,12 @@
+/**
+ * Typed selectors to read auth-related state and decode token payload.
+ *
+ * Context:
+ * - Leverages `createFeatureSelector` for slice targeting.
+ * - Derives loading, error, and authentication flags.
+ * - Decodes JWT to expose user role (is_staff) and username.
+ */
+
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import { jwtDecode } from 'jwt-decode';
 import { AuthState, TokenPayload } from '../models/auth.models';
