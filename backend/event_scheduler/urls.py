@@ -8,6 +8,8 @@ from rest_framework import routers
 
 routers = routers.SimpleRouter()
 
+# URL patterns for event category and time slot management API.
+
 urlpatterns = [
     path("categories/", CategoryListCreateView.as_view(), name="categories"),
     path(
