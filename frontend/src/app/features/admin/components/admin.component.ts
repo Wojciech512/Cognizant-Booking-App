@@ -14,6 +14,15 @@ import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule, MatOption } from '@angular/material/core';
 import { MatTableModule } from '@angular/material/table';
 import { Store } from '@ngrx/store';
+import {
+  AsyncPipe,
+  DatePipe,
+  NgForOf,
+  NgIf,
+  NgSwitch,
+  NgSwitchCase,
+} from '@angular/common';
+import { MatSelect } from '@angular/material/select';
 import { filter, Observable, take } from 'rxjs';
 import {
   addTimeSlot,
@@ -27,8 +36,6 @@ import {
 } from '../../calendar/models/time-slot.model';
 import { selectAllTimeSlots } from '../../calendar/state/time-slot/time-slot.selectors';
 import { loadEventCategories } from '../../calendar/state/event-category/event-category.actions';
-import { AsyncPipe, DatePipe, NgForOf, NgIf } from '@angular/common';
-import { MatSelect } from '@angular/material/select';
 
 @Component({
   selector: 'app-admin',
@@ -48,7 +55,10 @@ import { MatSelect } from '@angular/material/select';
     MatSelect,
     DatePipe,
     NgIf,
+    NgSwitchCase,
+    NgSwitch,
   ],
+
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.scss',
   standalone: true,
@@ -59,6 +69,7 @@ export class AdminComponent implements OnInit {
   readonly minDate: Date = new Date();
   readonly availableHours: string[] = [];
 
+  public objectKeys = Object.keys;
   public categories: EventCategory[] = [];
   public slotForm!: FormGroup;
 
