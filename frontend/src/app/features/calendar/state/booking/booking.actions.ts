@@ -2,6 +2,14 @@ import { createAction, props } from '@ngrx/store';
 import { Booking } from '../../models/booking.model';
 import { EventCategoryError } from '../../models/event-category.model';
 
+/**
+ * NgRx action definitions for booking workflows.
+ *
+ * Context:
+ * - Exposes actions to load, create, and cancel bookings.
+ * - Carries minimal payloads: filter criteria or booking identifiers.
+ */
+
 export const createBooking = createAction(
   '[Booking] Create Booking',
   props<{ timeSlotId: string }>(),

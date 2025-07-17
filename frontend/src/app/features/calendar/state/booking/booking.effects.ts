@@ -4,6 +4,15 @@ import { catchError, map, mergeMap, of } from 'rxjs';
 import * as BookingActions from './booking.actions';
 import { BookingService } from '../../services/booking.service';
 
+/**
+ * Side-effects for booking actions: handles HTTP requests and updates store.
+ *
+ * Context:
+ * - Listens for load, create, and cancel actions to call BookingService.
+ * - On success, dispatches corresponding success action; on error, dispatches failure.
+ * - Ensures UI stays in sync with backend state for booking operations.
+ */
+
 @Injectable()
 export class BookingEffects {
   private actions$ = inject(Actions);
