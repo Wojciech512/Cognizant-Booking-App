@@ -1,13 +1,26 @@
+# Docker Compose configuration for Event Booking Application Stack
+#
+# This file orchestrates the full environment:
+#   - PostgreSQL (db): persistent relational data
+#   - Redis: in-memory store, channels (WebSockets, async support)
+#   - Backend (Django): REST API with transactional booking logic
+#   - Frontend (Angular): SPA (development server)
+#
+# All environment variables are managed via .env (never hardcoded).
+# Each service is health-checked and dependencies are enforced via depends_on.
+# Volumes are used for database persistence and local frontend development.
+
 version: "3.9"
 
 services:
   db:
+    # PostgreSQL 16 as main relational database
     image: postgres:16-alpine
-    env_file: .env
+    env_file: .env # Securely load DB credentials from .env
     volumes:
-      - dbdata:/var/lib/postgresql/data
+      - dbdata:/var/lib/postgresql/data # Persist DB data between restarts
     ports:
-      - "5432:5432"
+      - "5432:5432" # Expose to host (optional for local dev)
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
@@ -15,6 +28,7 @@ services:
       retries: 5
 
   redis:
+    # Redis 7 for caching and Django Channels (real-time features)
     image: redis:7-alpine
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
@@ -23,15 +37,16 @@ services:
       retries: 5
 
   backend:
-    env_file: .env
+    # Django REST API application
+    env_file: .env # Load sensitive settings (SECRET_KEY, DB)
     build:
       context: ./backend
       dockerfile: Dockerfile-backend
     volumes:
-      - ./backend:/app
+      - ./backend:/app # Mount code for live reload/dev
     depends_on:
       db:
-        condition: service_healthy
+        condition: service_healthy # Start only after DB is ready
       redis:
         condition: service_healthy
     ports:
@@ -44,12 +59,13 @@ services:
       start_period: 5s
 
   frontend:
+    # Angular SPA (development server)
     build:
       context: ./frontend
       dockerfile: Dockerfile-frontend
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - ./frontend:/app # Mount source code for hot-reload
+      - /app/node_modules # Persist node_modules in container
     depends_on:
       - backend
     ports:
@@ -63,3 +79,13 @@ services:
 
 volumes:
   dbdata:
+# Usage:
+#   docker compose up --build         # Build and start all services
+#   docker compose down -v            # Tear down and remove volumes
+#   Ensure .env is present in project root with all secrets
+#
+# Tips:
+#   - Never commit secrets to version control
+#   - For production, use optimized Nginx-based frontend and hardened backend image
+#   - Healthchecks ensure service orchestration waits for DB/Redis/backend
+#   - Use Docker volumes for local dev (code hot-reload, persistent DB)

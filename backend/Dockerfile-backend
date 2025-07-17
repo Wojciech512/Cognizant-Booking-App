@@ -1,20 +1,52 @@
+# Dockerfile for Django Backend Service
+# This Dockerfile builds a ready-to-run Docker image for the Django backend.
+# Key features:
+#   - Uses official slim Python image for security and size
+#   - Installs build tools and PostgreSQL dependencies
+#   - Installs Python dependencies from requirements.txt
+#   - Collects static files, runs migrations, creates superuser, then starts Gunicorn
+#   - Exposes port 8000 for HTTP traffic
+#   - Entry-point and CMD combine for full initialization on container start
+
 FROM python:3.11-slim
 
+# Set working directory inside the container
+WORKDIR /app
+
+# Install system build dependencies (required for psycopg2/PostgreSQL and compiling wheels)
 RUN apt-get update \
     && apt-get install -y --no-install-recommends build-essential libpq-dev curl \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
-
+# Copy requirements file and install Python dependencies
 COPY requirements.txt .
 RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
+# Copy Django project files into container
 COPY . .
 
+# Expose the default port used by Gunicorn/Django
 EXPOSE 8000
 
+# Entrypoint uses bash to allow multiple setup commands in CMD
 ENTRYPOINT ["bash", "-c"]
+
+# CMD: Collect static files, run DB migrations, create superuser, then start Gunicorn
+# Notes:
+#   - The `create_superuser` command must be idempotent or implemented as a no-op if superuser exists
+#   - `--reload` is typically for development; remove in production for better performance
+#   - Adjust `--timeout` based on app workload
 CMD ["python manage.py collectstatic --noinput && \
       python manage.py migrate && \
       python manage.py create_superuser && \
       gunicorn --bind 0.0.0.0:8000 --timeout 500 --reload core.wsgi:application "]
+
+# Usage:
+#   Build:   docker build -t my-backend -f Dockerfile .
+#   Run:     docker run --env-file .env -p 8000:8000 my-backend
+#   Compose: use as the backend service in docker-compose.yml
+
+# Production tips:
+#   - Remove `--reload` flag from gunicorn for production
+#   - Use a volume for persistent media/static if needed
+#   - Prefer `alpine` base only if all dependencies are available as wheels

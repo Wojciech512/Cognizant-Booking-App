@@ -1,18 +1,47 @@
+# Dockerfile for Angular Development Environment
+# This Dockerfile builds a container for local Angular development (not for production).
+# Key features:
+#   - Uses official Node.js LTS (alpine) image for lightweight environment
+#   - Installs curl for debugging/healthcheck purposes
+#   - Installs dependencies with npm ci for reproducible builds
+#   - Runs Angular app with live-reload and polling enabled for Docker compatibility
+#   - Exposes port 4200 (default for Angular CLI)
+
 FROM node:lts-alpine AS dev
 
+# Set working directory inside container
 WORKDIR /app
 
+# Install curl (useful for debugging or health checks)
 RUN apk add --no-cache curl
 
+# Set environment variables for Node and Angular
 ENV PATH /app/node_modules/.bin:$PATH
 ENV CHOKIDAR_USEPOLLING=true
 ENV HOST=0.0.0.0
 
+# Copy package manifests and install dependencies
 COPY package*.json ./
+# Clean, reproducible install from lockfile
 RUN npm ci
 
+# Copy application source code
 COPY . .
 
+# Expose Angular development server port
 EXPOSE 4200
 
+# Start Angular dev server with Docker-friendly options:
+#   --host=0.0.0.0         Listen on all interfaces (allow connections from host)
+#   --poll=3000            Use polling for file changes (works in Docker)
+#   --disable-host-check   Disable host checking (not for production)
 CMD ["ng", "serve", "--host=0.0.0.0", "--port=4200", "--poll=3000", "--disable-host-check"]
+
+# Usage:
+#   Build:   docker build -t angular-dev -f Dockerfile .
+#   Run:     docker run -it -p 4200:4200 -v $PWD:/app angular-dev
+#
+# Notes:
+#   - For production, use an optimized multi-stage build serving static files with Nginx
+#   - Never use --disable-host-check in production
+#   - Use volume mounts (-v) to enable live-reload with code changes from host
