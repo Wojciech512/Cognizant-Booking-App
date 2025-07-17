@@ -10,6 +10,7 @@ from users.views import (
 
 routers = routers.SimpleRouter()
 
+# URL routing for user authentication endpoints.
 urlpatterns = [
     path(
         "token/",
