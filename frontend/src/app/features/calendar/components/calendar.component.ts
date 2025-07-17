@@ -32,6 +32,17 @@ import {
 import { MatCardModule } from '@angular/material/card';
 import { selectIsStaff } from '../../auth/state/auth.selectors';
 
+/**
+ * CalendarComponent: renders a week-based grid of time slots with category filters.
+ *
+ * Context:
+ * - Initialized under the `/calendar` route; lazy-loaded in app.routes.ts.
+ * - Pulls event categories and time slots from NgRx store, showing loading indicators.
+ * - Computes current week’s dates and allows navigation between weeks.
+ * - Supports category-based filtering via checkboxes.
+ * - Enables staff users to create slots (handled elsewhere) and regular users to book/cancel.
+ */
+
 @Component({
   selector: 'app-calendar',
   standalone: true,
@@ -78,12 +89,15 @@ export class CalendarComponent implements OnInit {
     this.loadingSlots$ = this.store.select(selectSlotsLoading);
     this.isStaff$ = this.store.select(selectIsStaff);
 
+    // Subscribe once to get all categories for name lookups
     this.eventCategories$
       .pipe(
         filter((cats) => cats.length > 0),
         take(1),
       )
       .subscribe((cats) => (this.categories = cats));
+
+    // Calculate start of current week (Mon=first day)
     const today = new Date();
     const dayIndex = today.getDay();
     this.currentWeekStart = new Date(today);
@@ -92,10 +106,12 @@ export class CalendarComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Trigger load of categories and then initial load of slots
     this.store.dispatch(CategoryActions.loadEventCategories());
     this.loadTimeSlots();
   }
 
+  // Populate daysOfWeek array with 7 dates starting from currentWeekStart
   private generateWeekDays(): void {
     this.daysOfWeek = [];
     for (let i = 0; i < 7; i++) {
@@ -105,6 +121,7 @@ export class CalendarComponent implements OnInit {
     }
   }
 
+  // Dispatch loadTimeSlots with current week range and optional category filter
   loadTimeSlots(): void {
     const filter: TimeSlotActions.TimeSlotFilter = {
       categoryIds: this.selectedCategoryIds.length
@@ -120,10 +137,12 @@ export class CalendarComponent implements OnInit {
     this.store.dispatch(TimeSlotActions.loadTimeSlots({ filter }));
   }
 
+  // Returns unique key for *ngFor when rendering category checkboxes
   trackByCategory(_: number, cat: EventCategory): number {
     return cat.id;
   }
 
+  // Toggle inclusion of a category in the filter and reload slots
   onToggleCategory(categoryId: number, checked: boolean): void {
     if (checked) {
       this.selectedCategoryIds = [...this.selectedCategoryIds, categoryId];
@@ -134,19 +153,24 @@ export class CalendarComponent implements OnInit {
     }
     this.loadTimeSlots();
   }
-
+  // Shift view to next week and refresh slots
   nextWeek(): void {
     this.currentWeekStart.setDate(this.currentWeekStart.getDate() + 7);
     this.generateWeekDays();
     this.loadTimeSlots();
   }
-
+  // Shift view to previous week and refresh slots
   prevWeek(): void {
     this.currentWeekStart.setDate(this.currentWeekStart.getDate() - 7);
     this.generateWeekDays();
     this.loadTimeSlots();
   }
 
+  /**
+   * Handle user clicking a slot:
+   * - If not booked: dispatch createBooking
+   * - If booked by current user: dispatch cancelBooking
+   */
   onSlotClick(slot: TimeSlot): void {
     if (!slot.is_booked) {
       this.store.dispatch(
@@ -162,6 +186,10 @@ export class CalendarComponent implements OnInit {
     }
   }
 
+  /**
+   * Determine if a slot falls into a given grid cell (day + hour).
+   * Used in template to position slots correctly.
+   */
   slotMatchesCell(slot: TimeSlot, day: Date, hour: number): boolean {
     const start = new Date(slot.start_dt);
     return (
@@ -172,6 +200,7 @@ export class CalendarComponent implements OnInit {
     );
   }
 
+  // Lookup category name by ID for display purposes
   getCategoryName(categoryId: number): string {
     const cat = this.categories.find((c) => c.id === categoryId);
     return cat ? cat.name : '';

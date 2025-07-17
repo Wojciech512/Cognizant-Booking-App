@@ -1,6 +1,14 @@
 import * as TimeSlotActions from '../state/time-slot/time-slot.actions';
 import { EventCategoryError } from './event-category.model';
 
+/**
+ * REST client for time slot operations.
+ *
+ * Context:
+ * - Uses HttpClient to GET available slots for a date and POST new ones.
+ * - Coordinates with NgRx effects to keep store in sync.
+ */
+
 export interface TimeSlot {
   id: string;
   start_dt: string;
@@ -14,6 +22,7 @@ export interface TimeSlot {
     booked_at: string;
   };
 }
+
 export interface CreateTimeSlot {
   start_dt: string;
   end_dt: string;

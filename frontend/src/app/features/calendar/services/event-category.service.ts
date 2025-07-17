@@ -4,6 +4,14 @@ import { Observable } from 'rxjs';
 import { EventCategory } from '../models/event-category.model';
 import { environment } from '@env/environment';
 
+/**
+ * REST client for event category operations.
+ *
+ * Context:
+ * - Uses HttpClient to GET the list of available event categories.
+ * - Supports future extensions (create/update/delete).
+ */
+
 @Injectable({ providedIn: 'root' })
 export class EventCategoryService {
   private apiUrl = environment.apiUrl;

@@ -4,6 +4,14 @@ import { Observable } from 'rxjs';
 import { Booking } from '../models/booking.model';
 import { environment } from '@env/environment';
 
+/**
+ * REST client for booking operations.
+ *
+ * Context:
+ * - Uses HttpClient to GET existing bookings and POST new ones.
+ * - Centralizes error handling for booking API endpoints.
+ */
+
 @Injectable({ providedIn: 'root' })
 export class BookingService {
   private apiUrl = environment.apiUrl;

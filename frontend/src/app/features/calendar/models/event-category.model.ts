@@ -1,3 +1,11 @@
+/**
+ * Domain model for an event category.
+ *
+ * Context:
+ * - Categories group and color-code different time slots.
+ * - Used by CategoryColorPipe to generate display colors.
+ */
+
 export interface EventCategory {
   id: number;
   name: string;

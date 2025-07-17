@@ -5,6 +5,14 @@ import { TimeSlot } from '../models/time-slot.model';
 import { TimeSlotFilter } from '../state/time-slot/time-slot.actions';
 import { environment } from '@env/environment';
 
+/**
+ * REST client for time slot operations.
+ *
+ * Context:
+ * - Uses HttpClient to GET available slots for a date and POST new ones.
+ * - Coordinates with NgRx effects to keep store in sync.
+ */
+
 @Injectable({ providedIn: 'root' })
 export class TimeSlotService {
   private apiUrl = environment.apiUrl;
