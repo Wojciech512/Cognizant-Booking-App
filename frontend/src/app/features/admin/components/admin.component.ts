@@ -38,13 +38,14 @@ import { selectAllTimeSlots } from '../../calendar/state/time-slot/time-slot.sel
 import { loadEventCategories } from '../../calendar/state/event-category/event-category.actions';
 
 /**
- * Main admin UI component for managing time slots.
+ * AdminComponent: UI for staff to manage time slots.
  *
  * Context:
- * - Fetches event categories and existing slots via NgRx on init.
- * - Builds a reactive form to add new slots (date, time, category).
- * - Provides utility functions to map category IDs to names.
- * - Dispatches load/add actions to the store and resets the form.
+ * - Lazy-standalone component under the `/admin` route.
+ * - On init, loads existing event categories and slots via NgRx.
+ * - Builds a reactive form to create new slots (date, hour, category).
+ * - Generates available hours starting from next full hour.
+ * - Dispatches add-slot action and resets form while preserving category.
  */
 
 @Component({
@@ -74,8 +75,11 @@ import { loadEventCategories } from '../../calendar/state/event-category/event-c
   standalone: true,
 })
 export class AdminComponent implements OnInit {
+  // Streams for categories and existing slots
   readonly eventCategories$: Observable<EventCategory[]>;
   readonly timeSlots$: Observable<TimeSlot[]>;
+
+  // Minimum allowed date (today) and computed list of hour strings
   readonly minDate: Date = new Date();
   readonly availableHours: string[] = [];
 
@@ -95,6 +99,7 @@ export class AdminComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Prepare hourly options and initialize form controls
     this.buildAvailableHours();
 
     this.slotForm = this.fb.group({
@@ -103,6 +108,7 @@ export class AdminComponent implements OnInit {
       category: [null, Validators.required],
     });
 
+    // Once categories are available, cache them and set default selection
     this.eventCategories$
       .pipe(
         filter((cats) => cats.length > 0),
@@ -114,11 +120,20 @@ export class AdminComponent implements OnInit {
       });
   }
 
+  /**
+   * Utility: map category ID to its name.
+   * Used in table display.
+   */
   getCategoryName(categoryId: number): string {
     const cat = this.categories.find((c) => c.id === categoryId);
     return cat ? cat.name : '-';
   }
 
+  /**
+   * Handler: dispatches addTimeSlot action using form values.
+   * - Constructs ISO timestamps for start/end (1h duration).
+   * - Resets form (date and time back to defaults, keeps category).
+   */
   onAdd(): void {
     if (this.slotForm.invalid) return;
 
@@ -144,6 +159,10 @@ export class AdminComponent implements OnInit {
     });
   }
 
+  /**
+   * Builds `availableHours` array starting from the next full hour
+   * through 23:00.
+   */
   buildAvailableHours() {
     const now = new Date();
     now.setMinutes(0, 0, 0);
