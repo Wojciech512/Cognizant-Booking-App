@@ -10,3 +10,19 @@
     z-index: 1;
   }
 }
+
+.slot-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.5rem;
+
+  mat-form-field {
+    flex: 1 1 auto;
+    min-width: 12.5rem;
+  }
+
+  button {
+    flex-basis: 100%;
+  }
+}

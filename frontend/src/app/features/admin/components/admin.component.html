@@ -3,6 +3,7 @@
     *ngIf="slotForm || timeSlots$ || categories.length; else noCatsTpl"
     [formGroup]="slotForm"
     (ngSubmit)="onAdd()"
+    class="slot-form"
   >
     <mat-form-field appearance="outline">
       <mat-label>Start date</mat-label>
@@ -42,7 +43,7 @@
     </mat-form-field>
 
     <button
-      mat-raised-button
+      mat-flat-button
       color="primary"
       type="submit"
       [disabled]="slotForm.invalid"

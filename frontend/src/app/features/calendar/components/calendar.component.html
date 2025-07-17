@@ -14,7 +14,7 @@
 </div>
 
 <div class="week-navigation">
-  <button mat-raised-button (click)="prevWeek()">
+  <button mat-flat-button (click)="prevWeek()">
     <mat-icon>arrow_back</mat-icon>
     <span>Last week</span>
   </button>
@@ -22,7 +22,7 @@
     {{ daysOfWeek[0] | date: "dd.MM.yyyy" }} -
     {{ daysOfWeek[6] | date: "dd.MM.yyyy" }}
   </span>
-  <button mat-raised-button (click)="nextWeek()">
+  <button mat-flat-button (click)="nextWeek()">
     <span>Next week</span>
     <mat-icon iconPositionEnd>arrow_forward</mat-icon>
   </button>

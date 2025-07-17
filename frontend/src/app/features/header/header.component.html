@@ -6,7 +6,7 @@
   <ng-container *ngIf="!(isAuthenticated$ | async); else loggedIn">
     <a mat-button routerLink="/register" class="text">Registration</a>
     <button
-      mat-raised-button
+      mat-flat-button
       color="warn"
       class="logout-btn"
       routerLink="/login"
@@ -23,12 +23,7 @@
     </ng-container>
 
     <span class="username">Hi, {{ username$ | async }}!</span>
-    <button
-      mat-raised-button
-      color="warn"
-      class="logout-btn"
-      (click)="logout()"
-    >
+    <button mat-flat-button color="warn" class="logout-btn" (click)="logout()">
       <mat-icon class="logout-icon">logout</mat-icon>
       <span>Logout</span>
     </button>
