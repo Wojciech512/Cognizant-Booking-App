@@ -5,6 +5,8 @@ from bookings.views import BookingCreateView, BookingDeleteView
 
 routers = routers.SimpleRouter()
 
+# URL patterns for booking creation and deletion endpoints.
+
 urlpatterns = [
     path("", BookingCreateView.as_view(), name="booking-create"),
     path(
