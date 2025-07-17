@@ -21,12 +21,19 @@ import { EventCategoryEffects } from './features/calendar/state/event-category/e
 import { TimeSlotEffects } from './features/calendar/state/time-slot/time-slot.effects';
 import { BookingEffects } from './features/calendar/state/booking/booking.effects';
 
+/**
+ * Application bootstrap configuration for a standalone Angular app.
+ *
+ * Context:
+ * - Defines DI providers before app initialization.
+ * - Integrates routing, HTTP client, zone-change optimization, and NgRx state management.
+ */
+
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }),
     provideHttpClient(withInterceptorsFromDi()),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    provideZoneChangeDetection({ eventCoalescing: true }),
-    provideHttpClient(),
     importProvidersFrom(MatNativeDateModule),
     provideRouter(appRoutes),
     provideStore(appReducers, { metaReducers: [storageSyncReducer] }),
