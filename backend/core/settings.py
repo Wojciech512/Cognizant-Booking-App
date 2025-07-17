@@ -1,3 +1,34 @@
+"""
+Django settings for the event booking application.
+
+This configuration module provides centralized settings for the Django backend, with the following scope and architectural context:
+
+- **Project context:**
+  The Django backend is part of a monorepo (Angular 19 + Django 5 + PostgreSQL 16), containerized using Docker and orchestrated via docker-compose. The backend exposes a REST API, handles transactional bookings, and is ready for future real-time updates using Django Channels and Redis. All sensitive credentials and deployment-specific values are managed via environment variables (.env file), following the twelve-factor app methodology.
+
+- **Core configuration areas:**
+    * **Project structure:** Defines absolute project paths and static file locations for consistent deployment in both local and containerized environments.
+    * **Environment management:** Loads and validates secrets and configuration from environment variables using the `environ` library. Secrets (e.g., SECRET_KEY) and database credentials must be set externally for each environment (dev, staging, production).
+    * **Installed applications:** Enables Django core apps, REST framework (with JWT authentication and token blacklisting), CORS, and channels (for future WebSocket support). The project includes custom domain apps for event scheduling and transactional booking logic.
+    * **Middleware stack:** Configures the middleware chain for security, CORS handling, session management, CSRF protection, authentication, messaging, and clickjacking prevention.
+    * **Templates:** Uses Django templates with context processors for authentication and messaging. Template directory is resolved relative to the project root for compatibility with Docker volumes.
+    * **Application entrypoints:** Declares both WSGI and ASGI applications. WSGI is used for standard HTTP traffic (Gunicorn in production), while ASGI enables future support for WebSocket and async features (Channels).
+    * **Database:** Connects to a PostgreSQL instance. Connection parameters are injected from environment variables, ensuring compatibility with Docker networking (e.g., service names as DB hosts). The backend expects a dedicated database per environment.
+    * **Channels (optional, RTU-ready):** Pre-configures a Redis-backed channel layer for real-time features. The Redis host is set via environment variables and defaults to the Docker Compose service name ("redis"). This does not affect HTTP performance and is ready for activation upon implementing real-time updates.
+    * **REST framework and JWT:** Sets up REST Framework with JWT authentication as default (via `rest_framework_simplejwt`). All API endpoints require authentication by default (can be overridden at the view level). JWT lifetimes are configurable via environment variables.
+    * **CORS:** In development, all origins are allowed. This should be restricted for production deployments.
+    * **Localization:** Sets English (US) as the default language, with the time zone set to Europe/Warsaw. Timezone-aware datetimes and internationalization are enabled.
+    * **Static files:** Serves static assets from a dedicated directory, supporting collectstatic and static file hosting in Dockerized environments (e.g., Nginx, WhiteNoise).
+    * **Primary key field:** Uses `BigAutoField` as the default for primary keys in all models, ensuring compatibility and scalability for large datasets.
+
+- **Security and best practices:**
+    * All secrets and critical settings (SECRET_KEY, database credentials, allowed hosts, JWT lifetimes) must be managed through environment variables. Never hardcode secrets in the repository.
+    * CORS and DEBUG must be reviewed and adjusted before deploying to production.
+    * Database migrations and user management (superuser creation) should be performed via CLI within the Docker container, not in code.
+    * All apps and packages should be kept up to date to address security vulnerabilities.
+    * Transactional integrity for booking is enforced at the database and API layer (see project docs).
+"""
+
 import os
 from datetime import timedelta
 from pathlib import Path
@@ -20,18 +51,15 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # REST & Auth
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
     "channels",
-    # Domenowe
     "core",
     "event_scheduler",
     "bookings",
 ]
 
-# Middleware
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
@@ -45,7 +73,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "core.urls"
 
-# Szablony
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -61,11 +88,9 @@ TEMPLATES = [
     },
 ]
 
-# WSGI i ASGI
 WSGI_APPLICATION = "core.wsgi.application"
 ASGI_APPLICATION = "core.asgi.application"
 
-# Baza danych (PostgreSQL)
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -77,7 +102,6 @@ DATABASES = {
     }
 }
 
-# Warstwa kanałów (przygotowanie dla RTU)
 REDIS_HOST = env("REDIS_HOST", default="redis")
 
 CHANNEL_LAYERS = {
@@ -89,7 +113,6 @@ CHANNEL_LAYERS = {
     },
 }
 
-# Uwierzytelnianie REST (JWT)
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -99,7 +122,6 @@ REST_FRAMEWORK = {
     ),
 }
 
-# Ustawienia Simple JWT
 ACCESS_TOKEN_LIFETIME = env.int("ACCESS_TOKEN_LIFETIME", default=60)
 REFRESH_TOKEN_LIFETIME = env.int("REFRESH_TOKEN_LIFETIME", default=1)
 
@@ -108,17 +130,13 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=REFRESH_TOKEN_LIFETIME),
 }
 
-# CORS – (w dewelopmencie otwarte dla wszystkich źródeł)
 CORS_ALLOW_ALL_ORIGINS = True
-# CORS_URLS_REGEX = r"^/api/.*$"
 
-# Międzynarodowe
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "Europe/Warsaw"
 USE_I18N = True
 USE_TZ = True
 
-# Statyczne pliki
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
