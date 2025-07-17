@@ -8,7 +8,7 @@ import {
 } from '@angular/material/progress-spinner';
 import { MatCheckbox, MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
-import { Observable } from 'rxjs';
+import { filter, Observable, take } from 'rxjs';
 import { EventCategory } from '../models/event-category.model';
 import { TimeSlot } from '../models/time-slot.model';
 import { FilterPipe } from '../../../shared/pipes/filter.pipe';
@@ -78,8 +78,12 @@ export class CalendarComponent implements OnInit {
     this.loadingSlots$ = this.store.select(selectSlotsLoading);
     this.isStaff$ = this.store.select(selectIsStaff);
 
-    this.eventCategories$.subscribe((cats) => (this.categories = cats));
-
+    this.eventCategories$
+      .pipe(
+        filter((cats) => cats.length > 0),
+        take(1),
+      )
+      .subscribe((cats) => (this.categories = cats));
     const today = new Date();
     const dayIndex = today.getDay();
     this.currentWeekStart = new Date(today);

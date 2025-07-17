@@ -1,10 +1,15 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import {
+  ApplicationConfig,
+  importProvidersFrom,
+  provideZoneChangeDetection,
+} from '@angular/core';
 import { provideRouter } from '@angular/router';
 import {
   HTTP_INTERCEPTORS,
   provideHttpClient,
   withInterceptorsFromDi,
 } from '@angular/common/http';
+import { MatNativeDateModule } from '@angular/material/core';
 import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { appRoutes } from './app.routes';
@@ -22,6 +27,7 @@ export const appConfig: ApplicationConfig = {
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideHttpClient(),
+    importProvidersFrom(MatNativeDateModule),
     provideRouter(appRoutes),
     provideStore(appReducers, { metaReducers: [storageSyncReducer] }),
     provideEffects([

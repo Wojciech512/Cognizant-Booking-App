@@ -1,151 +1,137 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  FormBuilder,
   FormGroup,
+  NonNullableFormBuilder,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { MatTimepickerModule } from '@angular/material/timepicker';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatNativeDateModule, MatOption } from '@angular/material/core';
+import { MatTableModule } from '@angular/material/table';
 import { Store } from '@ngrx/store';
+import { filter, Observable, take } from 'rxjs';
 import {
   addTimeSlot,
   loadTimeSlots,
 } from '../../calendar/state/time-slot/time-slot.actions';
-import {
-  MatCell,
-  MatCellDef,
-  MatColumnDef,
-  MatHeaderCell,
-  MatHeaderCellDef,
-  MatHeaderRow,
-  MatHeaderRowDef,
-  MatRow,
-  MatRowDef,
-  MatTable,
-} from '@angular/material/table';
-import { AsyncPipe, DatePipe, NgForOf } from '@angular/common';
 import { EventCategory } from '../../calendar/models/event-category.model';
-import { Observable } from 'rxjs';
 import { selectAllCategories } from '../../calendar/state/event-category/event-category.selectors';
 import {
   CreateTimeSlot,
   TimeSlot,
 } from '../../calendar/models/time-slot.model';
 import { selectAllTimeSlots } from '../../calendar/state/time-slot/time-slot.selectors';
-import { MatButton } from '@angular/material/button';
-import { MatFormField, MatInput, MatLabel } from '@angular/material/input';
-import { MatSelect } from '@angular/material/select';
-import { MatOption } from '@angular/material/core';
 import { loadEventCategories } from '../../calendar/state/event-category/event-category.actions';
+import { AsyncPipe, DatePipe, NgForOf, NgIf } from '@angular/common';
+import { MatSelect } from '@angular/material/select';
 
 @Component({
   selector: 'app-admin',
   imports: [
-    MatTable,
-    MatHeaderCell,
-    MatCell,
-    MatColumnDef,
-    MatHeaderRow,
-    MatRow,
-    MatCellDef,
-    MatHeaderCellDef,
-    MatHeaderRowDef,
-    MatRowDef,
-    AsyncPipe,
-    DatePipe,
-    MatFormField,
-    MatLabel,
-    MatFormField,
-    MatButton,
     ReactiveFormsModule,
-    MatFormField,
-    MatInput,
-    MatFormField,
-    MatSelect,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatTimepickerModule,
+    MatTableModule,
+    AsyncPipe,
     MatOption,
     NgForOf,
+    MatSelect,
+    DatePipe,
+    NgIf,
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.scss',
   standalone: true,
 })
 export class AdminComponent implements OnInit {
-  slotForm!: FormGroup;
-  eventCategories$: Observable<EventCategory[]>;
-  timeSlots$: Observable<TimeSlot[]>;
-  minStart: string;
-  start0: string;
-  end0: string;
+  readonly eventCategories$: Observable<EventCategory[]>;
+  readonly timeSlots$: Observable<TimeSlot[]>;
+  readonly minDate: Date = new Date();
+  readonly availableHours: string[] = [];
+
+  public categories: EventCategory[] = [];
+  public slotForm!: FormGroup;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: NonNullableFormBuilder,
     private store: Store,
   ) {
     this.eventCategories$ = this.store.select(selectAllCategories);
     this.timeSlots$ = this.store.select(selectAllTimeSlots);
 
-    const now = new Date();
-    this.start0 = this.formatLocal(now);
-    this.end0 = this.addHourLocal(this.start0);
-    const isoDate = now.toISOString().slice(0, 10);
-    const hour = now.getHours().toString().padStart(2, '0');
-    this.minStart = `${isoDate}T${hour}:00`;
+    this.store.dispatch(loadEventCategories());
+    this.store.dispatch(loadTimeSlots({ filter: {} }));
   }
 
   ngOnInit(): void {
-    this.store.dispatch(loadEventCategories());
-    this.store.dispatch(loadTimeSlots({ filter: {} }));
+    this.buildAvailableHours();
 
     this.slotForm = this.fb.group({
-      start_dt: [this.start0, Validators.required],
-      end_dt: [{ value: this.end0, disabled: true }, Validators.required],
-      category: ['', Validators.required],
+      date: [this.minDate, Validators.required],
+      time: [this.availableHours[0], Validators.required],
+      category: [null, Validators.required],
     });
 
-    this.slotForm.get('start_dt')!.valueChanges.subscribe((val) => {
-      const next = this.addHourLocal(val);
-      this.slotForm.get('end_dt')!.setValue(next, { emitEvent: false });
-    });
+    this.eventCategories$
+      .pipe(
+        filter((cats) => cats.length > 0),
+        take(1),
+      )
+      .subscribe((cats) => {
+        this.categories = cats;
+        this.slotForm.patchValue({ category: cats[0].id });
+      });
   }
 
-  onAdd() {
-    if (this.slotForm.valid) {
-      const value: CreateTimeSlot = this.slotForm.value;
-      this.store.dispatch(
-        addTimeSlot({
-          timeSlot: {
-            start_dt: value.start_dt,
-            end_dt: value.end_dt,
-            category: value.category,
-          },
-        }),
-      );
-      this.slotForm.reset();
-    }
-  }
-
-  // TODO do poprawy
   getCategoryName(categoryId: number): string {
-    this.eventCategories$.subscribe((cats) => {
-      const cat = cats.find((c) => c.id === categoryId);
-      return cat ? cat.name : '';
+    const cat = this.categories.find((c) => c.id === categoryId);
+    return cat ? cat.name : '-';
+  }
+
+  onAdd(): void {
+    if (this.slotForm.invalid) return;
+
+    const { date, time, category } = this.slotForm.value;
+    const [hourStr, minStr] = time.split(':');
+    const dt = new Date(date);
+    dt.setHours(+hourStr, +minStr, 0, 0);
+
+    const start_dt = dt.toISOString();
+    const end_dt = new Date(dt.getTime() + 60 * 60 * 1000).toISOString();
+
+    const payload: CreateTimeSlot = {
+      start_dt: start_dt,
+      end_dt: end_dt,
+      category,
+    };
+
+    this.store.dispatch(addTimeSlot({ timeSlot: payload }));
+    this.slotForm.reset({
+      date: this.minDate,
+      time: this.availableHours[0],
+      category: this.slotForm.value.category,
     });
-    return '';
   }
 
-  private formatLocal(date: Date): string {
-    const pad = (n: number) => n.toString().padStart(2, '0');
+  buildAvailableHours() {
+    const now = new Date();
+    now.setMinutes(0, 0, 0);
+    now.setHours(now.getHours() + 1);
+    const startH = now.getHours();
 
-    const year = date.getFullYear();
-    const month = pad(date.getMonth() + 1);
-    const day = pad(date.getDate());
-    const hour = pad(date.getHours());
-
-    return `${year}-${month}-${day}T${hour}:00`;
-  }
-
-  private addHourLocal(isoLocal: string): string {
-    const dt = new Date(isoLocal);
-    dt.setHours(dt.getHours() + 1);
-    return this.formatLocal(dt);
+    for (let h = startH; h < 24; h++) {
+      const hh = h.toString().padStart(2, '0');
+      this.availableHours.push(`${hh}:00`);
+    }
   }
 }

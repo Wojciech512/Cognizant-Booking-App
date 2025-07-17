@@ -7,4 +7,4 @@ const routes: Routes = [{ path: '', component: AdminComponent }];
 @NgModule({
   imports: [RouterModule.forChild(routes), AdminComponent],
 })
-export class CalendarModule {}
+export class AdminModule {}
