@@ -26,6 +26,15 @@ import {
 import { LoginPayload } from '../../models/auth.models';
 import * as AuthActions from '../../state/auth.actions';
 
+/**
+ * Component for user login form.
+ *
+ * Context:
+ * - Standalone Angular component displayed under `/login` route.
+ * - Uses reactive forms to capture credentials and NgRx to dispatch login actions.
+ * - Redirects to main app on success, and displays API errors on failure.
+ */
+
 @Component({
   selector: 'app-login',
   templateUrl: 'login.component.html',

@@ -27,6 +27,15 @@ import {
 import { RegisterPayload } from '../../models/auth.models';
 import * as AuthActions from '../../state/auth.actions';
 
+/**
+ * Component for user registration form.
+ *
+ * Context:
+ * - Standalone Angular component displayed under `/register` route.
+ * - Utilizes reactive forms for input validation and NgRx for dispatching register actions.
+ * - Shows server-side validation errors and navigates to login page on successful registration.
+ */
+
 @Component({
   selector: 'app-register',
   templateUrl: 'register.component.html',
