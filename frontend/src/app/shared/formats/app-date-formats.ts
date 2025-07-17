@@ -1,6 +1,15 @@
 import { MatDateFormats } from '@angular/material/core';
 import { NativeDateAdapter } from '@angular/material/core';
 
+/**
+ * Custom date format definitions and adapter for Angular Material datepickers.
+ *
+ * Context:
+ * - Provides European DD.MM.YYYY parsing/display patterns via MAT_DATE_FORMATS.
+ * - Overrides NativeDateAdapter.format() to output dates as “day.month.year” with zero-padding.
+ * - Registered globally in AppComponent providers to standardize all date fields.
+ */
+
 export const APP_DATE_FORMATS: MatDateFormats = {
   parse: {
     dateInput: 'DD.MM.YYYY',
