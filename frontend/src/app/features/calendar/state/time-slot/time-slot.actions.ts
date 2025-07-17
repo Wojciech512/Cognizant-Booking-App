@@ -2,6 +2,15 @@ import { createAction, props } from '@ngrx/store';
 import { CreateTimeSlot, TimeSlot } from '../../models/time-slot.model';
 import { EventCategoryError } from '../../models/event-category.model';
 
+/**
+ * Defines NgRx actions for loading and managing time slots.
+ *
+ * Context:
+ * - loadTimeSlots: triggers fetching slots within a given date range and optional category filter.
+ * - createTimeSlot: triggers creation of a new slot (used by admin).
+ * - Each operation has corresponding Success/Failure actions carrying payload or error.
+ */
+
 export interface TimeSlotFilter {
   categoryIds?: number[];
   startDate?: string;

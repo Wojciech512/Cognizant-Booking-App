@@ -5,6 +5,14 @@ import * as TimeSlotActions from './time-slot.actions';
 import * as BookingActions from '../booking/booking.actions';
 import { TimeSlotService } from '../../services/time-slot.service';
 
+/**
+ * Side-effects for TimeSlot actions: performs HTTP calls via TimeSlotService.
+ *
+ * Context:
+ * - loadTimeSlots$: on loadTimeSlots, fetch slots from backend and dispatch success/failure.
+ * - createTimeSlot$: on createTimeSlot, POST new slot and dispatch success/failure.
+ */
+
 @Injectable()
 export class TimeSlotEffects {
   private actions$ = inject(Actions);

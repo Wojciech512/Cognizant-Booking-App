@@ -2,6 +2,14 @@ import { createReducer, on } from '@ngrx/store';
 import * as TimeSlotActions from './time-slot.actions';
 import { TimeSlotState } from '../../models/time-slot.model';
 
+/**
+ * Reducer managing the TimeSlot slice of state.
+ *
+ * Context:
+ * - Maintains an array of slots, loading flag and error.
+ * - Updates state in response to load/create actions and their outcomes.
+ */
+
 const initialState: TimeSlotState = {
   timeSlots: [],
   loading: false,
