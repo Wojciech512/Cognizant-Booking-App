@@ -1,0 +1,12 @@
+.table-container {
+  max-height: 25rem;
+  overflow: auto;
+
+  .row,
+  .cell {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 1;
+  }
+}
