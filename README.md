@@ -9,10 +9,10 @@
 1. [Quick Start](#quick-start)
 2. [Pre-commit Setup](#pre-commit-setup)
 3. [Architecture](#architecture)
-   - [Frontend (Angular 17 + NgRx)](#frontend-angular-17--ngrx)
+   - [Frontend (Angular 19 + NgRx)](#frontend-angular-19--ngrx)
    - [Backend (Django 5 + Django REST Framework)](#backend-django-5--django-rest-framework)
-        - [Database (PostgreSQL 16)](#database-postgresql-16)
-        - [Docker & Deployment](#docker--deployment)
+     - [Database (PostgreSQL 16)](#database-postgresql-16)
+     - [Docker & Deployment](#docker--deployment)
 
 4. [Planned Enhancements](#planned-enhancements)
 
@@ -154,11 +154,49 @@ CognizantBookingApp is organized into a client–server architecture with a clea
 
 ## Planned Enhancements
 
-- **Real-time Slot Updates**: Integrate Django Channels + Redis and `ngx-socket-io` for live booking notifications.
-- **Time Zone Handling**: Store times in UTC, allow user-selected display zones.
-- **Admin UI & UX Improvements**: Edit/delete categories, modify slots, booking analytics dashboard.
-- **Additional Validation Rules**: Prevent past slot creation, overlapping bookings, enforce lead times.
-- **Testing, CI, Quality Gates**: Increase test coverage to ≥80%, add GitHub Actions, implement feature flags for safe rollouts.
+### 1. Error Handling & Notifications
+
+- **NotificationService**: implement success and error message display (snackbars) in the frontend for operations such as creating categories, booking, canceling bookings, etc.
+- **Backend Exception Handling**: handle additional exceptions in the API (e.g. `IntegrityError`, `ValidationError`) and return appropriate HTTP status codes (400, 409, 5xx) with descriptive error messages.
+
+### 2. Documentation
+
+- **Inline docs**: add comments and docstrings in the code (models, serializers, Angular services).
+- **README.md**: update with descriptions of new features, notification handling instructions, and test scenarios.
+
+### 3. Testing
+
+- **Frontend (Jasmine/Karma)** (**IMPORTANT**): <span style="color: red;">prepare unit tests for components, services, and NgRx effects, also targeting ≥ 80% coverage.</span>
+
+### 4. Time Zone Support
+
+- **Dynamic Time Zone**: ensure that both backend and frontend correctly display and store dates/times in the user's local time zone (including DST).
+
+### 5. Business Constraints & Validation
+
+- **Slot Booking Limit** (**IMPORTANT**): <span style="color:red">allow a maximum of 2 bookings per `TimeSlot`.</span>
+- **Date Validation** (**IMPORTANT**): <span style="color:red">prevent creating bookings in the past (backend validation) (`start_dt < now`).</span>
+
+### 6. Real-time & Caching
+
+- **Redis + Channels**: add Redis configuration to `docker-compose` and initial scaffolding for Django Channels to emit slot availability events in real time.
+- **Frontend RTU**: initialize a `WebSocketSubject`/`ngx-socket-io` connection to receive events and dynamically update the calendar view.
+
+### 7. UX for No Data & Expired Sessions
+
+- **Fallback Views**: prepare alternative components (e.g. “No available slots”, “Session expired – please log in again”).
+- **Auto-logout** (**IMPORTANT**): <span style="color:red">detect JWT expiration, clear application state, and redirect to the login page.</span>
+
+### 8. Further Improvements
+
+- **Error Handling in Notes**: implement snackbars for errors in note-taking or additional feature modules.
+- **Date Range Modes**: consider calendar display modes for:
+  - weekdays only
+  - weekends only
+  - single-day view
+
+- **Responsiveness**: optimize calendar and admin panel layouts for mobile/tablet.
+- **Sticky Headers & Columns**: introduce fixed day/hour headers or switch to a `mat-table` for improved performance and built-in sorting/filtering.
 
 ---
 
