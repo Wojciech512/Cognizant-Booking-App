@@ -33,6 +33,7 @@ Follow these steps to build and run the application using Docker and docker-comp
 ```bash
 git clone <repo-url>
 cd <repo-directory>
+#optional step if want to develop this app
 pip install pre-commit
 pre-commit install
 ```
